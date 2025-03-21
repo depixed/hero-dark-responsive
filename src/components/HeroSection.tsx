@@ -93,7 +93,7 @@ const HeroSection = () => {
                   COMING SOON
                 </motion.h2>
 
-                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-white">
                   The one-stop-shop that allows business <br className="hidden md:block" /> 
                   owners to focus on what matters most:
                   <br />
@@ -185,7 +185,7 @@ const HeroSection = () => {
                 COMING SOON
               </motion.h2>
               
-              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 text-white">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-white">
                 The one-stop-shop that allows<br /> 
                 business owners to focus on what matters most:
                 <br />
