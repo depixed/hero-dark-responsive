@@ -207,79 +207,85 @@ const HeroSection = () => {
               />
             </motion.div>
             
-            {/* Cards stacked vertically */}
-            <div className="grid grid-cols-1 gap-3">
-              <motion.div className="mobile-hero-card" variants={itemVariants}>
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                    <span className="text-primary text-xl">✓</span>
+            {/* Cards in C arc for mobile */}
+            <div className="relative h-[400px] mb-8">
+              {/* Left C Arc Cards */}
+              <div className="absolute left-0 top-0 h-full flex flex-col justify-between py-4">
+                <motion.div className="mobile-hero-card" variants={itemVariants}>
+                  <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
+                      <span className="text-primary text-xl">✓</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Incorporation</p>
+                      <p className="text-xs text-gray-300">Register and license your company</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Incorporation</p>
-                    <p className="text-xs text-gray-300">Register and license your company</p>
+                </motion.div>
+                
+                <motion.div className="mobile-hero-card transform translate-x-4" variants={itemVariants}>
+                  <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
+                      <span className="text-primary text-xl">$</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Accounting</p>
+                      <p className="text-xs text-gray-300">Manage your bookkeeping</p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+                
+                <motion.div className="mobile-hero-card transform translate-x-8" variants={itemVariants}>
+                  <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
+                      <span className="text-primary text-xl">🏦</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Bank Account</p>
+                      <p className="text-xs text-gray-300">Open and integrate your bank account</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
               
-              <motion.div className="mobile-hero-card" variants={itemVariants}>
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                    <span className="text-primary text-xl">$</span>
+              {/* Right C Arc Cards */}
+              <div className="absolute right-0 top-0 h-full flex flex-col justify-between py-4">
+                <motion.div className="mobile-hero-card transform -translate-x-8" variants={itemVariants}>
+                  <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
+                      <span className="text-primary text-xl">®</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Trademark</p>
+                      <p className="text-xs text-gray-300">Register your trademark</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Accounting</p>
-                    <p className="text-xs text-gray-300">Manage your bookkeeping</p>
+                </motion.div>
+                
+                <motion.div className="mobile-hero-card transform -translate-x-4" variants={itemVariants}>
+                  <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
+                      <span className="text-primary text-xl">AI</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">AI-Based Business Intelligence</p>
+                      <p className="text-xs text-gray-300">Gain advanced insights</p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-              
-              <motion.div className="mobile-hero-card" variants={itemVariants}>
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                    <span className="text-primary text-xl">🏦</span>
+                </motion.div>
+                
+                <motion.div className="mobile-hero-card transform -translate-x-8" variants={itemVariants}>
+                  <div className="flex gap-2 items-center">
+                    <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
+                      <span className="text-primary text-xl">🏛️</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">Corporate Tax</p>
+                      <p className="text-xs text-gray-300">File your taxes</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Bank Account</p>
-                    <p className="text-xs text-gray-300">Open and integrate your bank account</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div className="mobile-hero-card" variants={itemVariants}>
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                    <span className="text-primary text-xl">®</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Trademark</p>
-                    <p className="text-xs text-gray-300">Register your trademark</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div className="mobile-hero-card" variants={itemVariants}>
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                    <span className="text-primary text-xl">AI</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">AI-Based Business Intelligence</p>
-                    <p className="text-xs text-gray-300">Gain advanced insights</p>
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div className="mobile-hero-card" variants={itemVariants}>
-                <div className="flex gap-2 items-center">
-                  <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                    <span className="text-primary text-xl">🏛️</span>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">Corporate Tax</p>
-                    <p className="text-xs text-gray-300">File your taxes</p>
-                  </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
             
             {/* CTA Button */}
