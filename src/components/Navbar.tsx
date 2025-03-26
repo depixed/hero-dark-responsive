@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,14 +26,16 @@ const Navbar = () => {
       isScrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent'
     }`}>
       <div className="flex items-center justify-center w-full max-w-7xl">
-        <motion.img 
-          src="/incorpify-logo.png" 
-          alt="Incorpify Logo" 
-          className="h-16 md:h-20"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        />
+        <Link to="/">
+          <motion.img 
+            src="/incorpify-logo.png" 
+            alt="Incorpify Logo" 
+            className="h-16 md:h-20"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          />
+        </Link>
       </div>
     </nav>
   );
