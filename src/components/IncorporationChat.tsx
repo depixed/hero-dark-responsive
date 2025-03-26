@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
 import { useIsMobile } from '../hooks/use-mobile';
 import SignupFormModal from './FixedSignupFormModal';
+import EarlyAccessModal from './EarlyAccessModal';
 import {
   Building2, 
   CirclePlus, 
@@ -332,6 +333,7 @@ const IncorporationChat = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [typingComplete, setTypingComplete] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [showEarlyAccessModal, setShowEarlyAccessModal] = useState(false);
 
   // Function to add delay with loading animation
   const addNextQuestionWithDelay = (nextQuestion: Question | { text: string; subtext?: string }) => {
@@ -489,13 +491,7 @@ const IncorporationChat = () => {
   // Handle send message
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
-    
-    setChatHistory(prev => [
-      ...prev,
-      { type: 'answer', content: inputValue }
-    ]);
-    
-    setInputValue('');
+    setShowEarlyAccessModal(true);
   };
 
   // Handle typing complete for showing options
@@ -774,6 +770,12 @@ const IncorporationChat = () => {
         open={isSignupModalOpen} 
         onClose={handleCloseSignupModal} 
         chatAnswers={selectedAnswers}
+      />
+
+      {/* Early Access Modal */}
+      <EarlyAccessModal 
+        open={showEarlyAccessModal} 
+        onClose={() => setShowEarlyAccessModal(false)} 
       />
     </div>
   );
