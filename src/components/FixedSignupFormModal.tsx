@@ -224,11 +224,11 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
       case 'form':
         return (
           <form onSubmit={handleEmailSubmit} className="space-y-6">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#1CD2E8] via-[#965BE4] to-[#201B36]">
+            <DialogHeader className="space-y-3">
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] bg-clip-text text-transparent">
                 Get Your Personalized Plan
               </DialogTitle>
-              <DialogDescription className="text-gray-400">
+              <DialogDescription className="text-gray-400 text-base">
                 Enter your details to receive your incorporation plan.
               </DialogDescription>
             </DialogHeader>
@@ -241,7 +241,7 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={`bg-gray-900 border-gray-700 text-white ${errors.name ? 'border-red-500' : ''}`}
+                  className={`bg-[#1F1F1F] border-[#2F2F2F] text-white placeholder:text-gray-500 h-12 rounded-lg px-6 ${errors.name ? 'border-red-500' : ''}`}
                 />
                 {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
               </div>
@@ -254,7 +254,7 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`bg-gray-900 border-gray-700 text-white ${errors.email ? 'border-red-500' : ''}`}
+                  className={`bg-[#1F1F1F] border-[#2F2F2F] text-white placeholder:text-gray-500 h-12 rounded-lg px-6 ${errors.email ? 'border-red-500' : ''}`}
                 />
                 {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
               </div>
@@ -264,151 +264,102 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
                 <Input
                   id="phone"
                   name="phone"
+                  type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`bg-gray-900 border-gray-700 text-white ${errors.phone ? 'border-red-500' : ''}`}
+                  className={`bg-[#1F1F1F] border-[#2F2F2F] text-white placeholder:text-gray-500 h-12 rounded-lg px-6 ${errors.phone ? 'border-red-500' : ''}`}
                 />
                 {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
               </div>
             </div>
 
             {submitError && (
-              <div className="bg-red-900/30 border border-red-700 text-red-200 p-3 rounded-md text-sm">
-                {submitError}
-              </div>
+              <p className="text-sm text-red-500 mt-2">{submitError}</p>
             )}
 
-            <DialogFooter>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#1CD2E8] via-[#965BE4] to-[#201B36] hover:opacity-90 text-white"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    Verify Email
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </DialogFooter>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full h-12 bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 text-base font-medium transition-all duration-200 ease-in-out"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin" />
+                  <span>Submitting...</span>
+                </div>
+              ) : (
+                'Get Your Personalized Plan'
+              )}
+            </Button>
           </form>
         );
 
       case 'otp':
         return (
           <form onSubmit={handleOtpSubmit} className="space-y-6">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-white">
+            <DialogHeader className="space-y-3">
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] bg-clip-text text-transparent">
                 Verify Your Email
               </DialogTitle>
-              <DialogDescription className="text-gray-400">
-                We've sent a verification code to <span className="text-blue-400">{formData.email}</span>.
-                <br />
-                Check your inbox for the code or use one of the test codes shown below.
+              <DialogDescription className="text-gray-400 text-base">
+                We've sent a verification code to {formData.email}
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="otp" className="text-white">Verification Code</Label>
-                <div className="flex items-center bg-gray-900 border border-gray-700 rounded-md focus-within:ring-1 focus-within:ring-purple-500 focus-within:border-purple-500">
-                  <span className="pl-3 pr-2 text-gray-400">
-                    <Mail className="h-5 w-5" />
-                  </span>
-                  <Input
-                    id="otp"
-                    value={otp}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, '').slice(0, 6);
-                      setOtp(value);
-                      if (errors.otp) {
-                        setErrors(prev => {
-                          const newErrors = { ...prev };
-                          delete newErrors.otp;
-                          return newErrors;
-                        });
-                      }
-                    }}
-                    className={`bg-transparent border-0 focus-visible:ring-0 text-white text-lg letter-spacing-1 ${errors.otp ? 'border-red-500' : ''}`}
-                    maxLength={6}
-                    placeholder="123456"
-                  />
-                </div>
+                <Input
+                  id="otp"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className={`bg-[#1F1F1F] border-[#2F2F2F] text-white placeholder:text-gray-500 h-12 rounded-lg px-6 ${errors.otp ? 'border-red-500' : ''}`}
+                  placeholder="Enter 6-digit code"
+                />
                 {errors.otp && <p className="text-sm text-red-500">{errors.otp}</p>}
-                <div className="text-xs text-gray-400 mt-2 p-3 bg-gray-800 rounded-md">
-                  <p className="font-medium mb-1">For testing purposes:</p>
-                  <ul className="space-y-1 pl-4">
-                    <li>• Enter the code from the email we sent you, or</li>
-                    <li>• Use code <span className="font-semibold text-purple-400">{generatedOtp}</span> (generated for you), or</li>
-                    <li>• Use code <span className="font-semibold text-purple-400">123456</span> (test code)</li>
-                  </ul>
-                </div>
               </div>
             </div>
 
             {submitError && (
-              <div className="bg-red-900/30 border border-red-700 text-red-200 p-3 rounded-md text-sm">
-                {submitError}
-              </div>
+              <p className="text-sm text-red-500 mt-2">{submitError}</p>
             )}
 
-            <DialogFooter className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:justify-between">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setFormStage('form')}
-                className="text-gray-400 border-gray-700 hover:bg-gray-800 hover:text-white"
-              >
-                Back
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-gradient-to-r from-[#1CD2E8] via-[#965BE4] to-[#201B36] hover:opacity-90 text-white"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  <>
-                    Complete Sign Up
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-            </DialogFooter>
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full h-12 bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 text-base font-medium transition-all duration-200 ease-in-out"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin" />
+                  <span>Verifying...</span>
+                </div>
+              ) : (
+                'Verify Email'
+              )}
+            </Button>
           </form>
         );
 
       case 'success':
         return (
-          <div className="space-y-6 text-center">
+          <div className="space-y-6">
+            <DialogHeader className="space-y-3">
+              <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] bg-clip-text text-transparent">
+                Thank You!
+              </DialogTitle>
+              <DialogDescription className="text-gray-400 text-base">
+                Your personalized incorporation plan is ready. We'll be in touch shortly to discuss the next steps.
+              </DialogDescription>
+            </DialogHeader>
+
             <div className="flex justify-center">
-              <div className="rounded-full bg-green-500/20 p-3">
-                <CheckCircle className="h-10 w-10 text-green-500" />
-              </div>
+              <CheckCircle className="w-16 h-16 text-green-500" />
             </div>
-            
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2">Thank You!</h3>
-              <p className="text-gray-400">
-                Your incorporation plan is on its way to your email.
-                One of our specialists will contact you soon.
-              </p>
-            </div>
-            
-            <Button
-              type="button"
+
+            <Button 
               onClick={handleClose}
-              className="bg-gradient-to-r from-[#1CD2E8] via-[#965BE4] to-[#201B36] hover:opacity-90 text-white"
+              className="w-full h-12 bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 text-base font-medium transition-all duration-200 ease-in-out"
             >
               Close
             </Button>
@@ -419,7 +370,7 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-gray-950 border-gray-800 text-white sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md bg-[#0A0A0A] border border-[#1F1F1F] text-white">
         {renderForm()}
       </DialogContent>
     </Dialog>

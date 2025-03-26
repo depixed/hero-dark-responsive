@@ -33,7 +33,7 @@ const EarlyAccessPopup: React.FC<EarlyAccessPopupProps> = ({ open, onClose }) =>
       // Insert the subscription into the subscribers table
       const { error } = await supabase
         .from('subscribers')
-        .insert([{ email, type: 'early_access' }]);
+        .insert([{ email }]);
       
       if (error) {
         if (error.code === '23505') { // Unique violation error code
@@ -57,32 +57,40 @@ const EarlyAccessPopup: React.FC<EarlyAccessPopupProps> = ({ open, onClose }) =>
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Get Early Access</DialogTitle>
-          <DialogDescription className="text-gray-400">
-            Sign up to get early access to our custom AI models
+      <DialogContent className="sm:max-w-md bg-[#0A0A0A] border border-[#1F1F1F] text-white">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] bg-clip-text text-transparent">
+            Sign up for early access
+          </DialogTitle>
+          <DialogDescription className="text-gray-400 text-base">
+            Be among the first to experience our custom AI models. Join our early access program today.
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <div className="space-y-2">
             <Input
               type="email"
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full"
-              required
+              className="bg-[#1F1F1F] border-[#2F2F2F] text-white placeholder:text-gray-500 h-12 rounded-lg px-6"
             />
           </div>
           
           <Button 
             type="submit" 
-            className="w-full bg-gradient-to-br from-[#3B00EC] to-[#965BE4] hover:from-[#3500D4] hover:to-[#8951CC] text-white"
+            className="w-full h-12 bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 text-base font-medium transition-all duration-200 ease-in-out"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Subscribing...' : 'Subscribe for Early Access'}
+            {isSubmitting ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="w-5 h-5 border-t-2 border-white border-solid rounded-full animate-spin" />
+                <span>Subscribing...</span>
+              </div>
+            ) : (
+              'Sign up'
+            )}
           </Button>
         </form>
       </DialogContent>

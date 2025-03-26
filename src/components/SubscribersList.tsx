@@ -13,7 +13,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 type Subscriber = {
   id: string;
   email: string;
-  type: string;
+  type?: string;
   created_at: string;
 };
 
@@ -69,7 +69,6 @@ const SubscribersList = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>Email</TableHead>
-                  <TableHead>Type</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
@@ -77,7 +76,6 @@ const SubscribersList = () => {
                 {subscribers.map((subscriber) => (
                   <TableRow key={subscriber.id}>
                     <TableCell className="font-medium">{subscriber.email}</TableCell>
-                    <TableCell>{subscriber.type}</TableCell>
                     <TableCell>
                       {format(new Date(subscriber.created_at), 'MMM dd, yyyy')}
                     </TableCell>
