@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Users, BarChart3, TrendingUp, Calendar } from 'lucide-react';
+import { Users, BarChart3, TrendingUp, Calendar, Mail } from 'lucide-react';
 import { getLeads, Lead, getCurrentUser } from '../lib/supabase';
+import SubscribersList from '../components/SubscribersList';
 
 const StatCard = ({ title, value, description, icon, className }: { 
   title: string;
@@ -241,6 +242,9 @@ const DashboardPage = () => {
                 </CardContent>
               </Card>
             </div>
+            
+            {/* Subscribers List */}
+            <SubscribersList />
           </>
         )}
       </div>

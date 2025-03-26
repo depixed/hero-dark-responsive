@@ -69,13 +69,6 @@ export interface User {
   role: string;
 }
 
-// Subscriber type
-export interface Subscriber {
-  id: string;
-  email: string;
-  created_at: string;
-}
-
 // Authentication functions
 export const signInAdmin = async (email: string, password: string) => {
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -374,31 +367,6 @@ export const signInWithOtp = async (email: string) => {
   }
 
   return data;
-};
-
-// Create a new subscriber
-export const createSubscriber = async (email: string) => {
-  await ensureSession();
-  const { data, error } = await supabase
-    .from('subscribers')
-    .insert([{ email }])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-};
-
-// Get all subscribers
-export const getSubscribers = async () => {
-  await ensureSession();
-  const { data, error } = await supabase
-    .from('subscribers')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-  return data as Subscriber[];
 };
 
 export default supabase; 

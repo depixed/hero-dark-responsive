@@ -11,12 +11,23 @@ CREATE TABLE IF NOT EXISTS leads (
   answers JSONB NOT NULL
 );
 
+-- Create subscribers table for early access signups
+CREATE TABLE IF NOT EXISTS subscribers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  email TEXT NOT NULL UNIQUE,
+  type TEXT NOT NULL DEFAULT 'early_access'
+);
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
 CREATE INDEX IF NOT EXISTS idx_leads_created_at ON leads(created_at);
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_created_at ON subscribers(created_at);
 
 -- Enable Row Level Security
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
+ALTER TABLE subscribers ENABLE ROW LEVEL SECURITY;
 
 -- Drop existing policies to start fresh
 DROP POLICY IF EXISTS "Allow authenticated users to view leads" ON leads;
@@ -49,6 +60,21 @@ CREATE POLICY "allow_select_for_authenticated"
 CREATE POLICY "allow_delete_for_authenticated" 
   ON leads 
   FOR DELETE 
+  TO authenticated
+  USING (true);
+
+-- Subscribers table policies
+-- Allow anyone to submit their email
+CREATE POLICY "allow_inserts_for_subscribers" 
+  ON subscribers 
+  FOR INSERT 
+  TO authenticated, anon
+  WITH CHECK (true);
+
+-- Allow only authenticated users to view subscribers
+CREATE POLICY "allow_select_for_subscribers" 
+  ON subscribers 
+  FOR SELECT 
   TO authenticated
   USING (true);
 

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './ui/button';
 import { useIsMobile } from '../hooks/use-mobile';
 import SignupFormModal from './FixedSignupFormModal';
-import EarlyAccessModal from './EarlyAccessModal';
+import EarlyAccessPopup from './EarlyAccessPopup';
 import {
   Building2, 
   CirclePlus, 
@@ -333,7 +333,7 @@ const IncorporationChat = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [typingComplete, setTypingComplete] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-  const [showEarlyAccessModal, setShowEarlyAccessModal] = useState(false);
+  const [isEarlyAccessOpen, setIsEarlyAccessOpen] = useState(false);
 
   // Function to add delay with loading animation
   const addNextQuestionWithDelay = (nextQuestion: Question | { text: string; subtext?: string }) => {
@@ -488,10 +488,17 @@ const IncorporationChat = () => {
     setInputValue(e.target.value);
   };
 
-  // Handle send message
+  // Handle send message - now opens the early access popup
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
-    setShowEarlyAccessModal(true);
+    
+    // Open early access popup instead of sending message
+    setIsEarlyAccessOpen(true);
+  };
+
+  // Handle closing early access popup
+  const handleCloseEarlyAccess = () => {
+    setIsEarlyAccessOpen(false);
   };
 
   // Handle typing complete for showing options
@@ -756,10 +763,10 @@ const IncorporationChat = () => {
               />
             </div>
             <Button 
-              className="h-full aspect-square rounded-none flex items-center justify-center bg-gradient-to-br from-[#3B00EC] to-[#965BE4] hover:from-[#3500D4] hover:to-[#8951CC] p-6"
+              className="h-full aspect-square rounded-none flex items-center justify-center bg-gradient-to-br from-[#3B00EC] to-[#965BE4] hover:from-[#3500D4] hover:to-[#8951CC] p-8"
               onClick={handleSendMessage}
             >
-              <Send className="w-10 h-10 text-white scale-150" strokeWidth={1.5} />
+              <Send className="w-16 h-16 text-white scale-150" strokeWidth={1.5} />
             </Button>
           </div>
         </div>
@@ -772,10 +779,10 @@ const IncorporationChat = () => {
         chatAnswers={selectedAnswers}
       />
 
-      {/* Early Access Modal */}
-      <EarlyAccessModal 
-        open={showEarlyAccessModal} 
-        onClose={() => setShowEarlyAccessModal(false)} 
+      {/* Early Access Popup */}
+      <EarlyAccessPopup
+        open={isEarlyAccessOpen}
+        onClose={handleCloseEarlyAccess}
       />
     </div>
   );

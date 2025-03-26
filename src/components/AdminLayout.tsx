@@ -50,7 +50,6 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard className="h-5 w-5" /> },
     { name: 'Leads', path: '/admin/leads', icon: <Users className="h-5 w-5" /> },
-    { name: 'Subscribers', path: '/admin/subscribers', icon: <Users className="h-5 w-5" /> },
     { name: 'Settings', path: '/admin/settings', icon: <Settings className="h-5 w-5" /> },
   ];
   
