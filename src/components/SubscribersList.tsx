@@ -47,36 +47,39 @@ const SubscribersList = () => {
   }, []);
 
   return (
-    <Card>
+    <Card className="bg-gray-900 border-gray-800">
       <CardHeader>
-        <CardTitle>Subscribers</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-white">Subscribers</CardTitle>
+        <CardDescription className="text-gray-400">
           People who signed up for early access to custom AI models
         </CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-700"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
           </div>
         ) : subscribers.length === 0 ? (
-          <div className="text-center py-6 text-gray-500">
+          <div className="text-center py-6 text-gray-400">
             No subscribers yet
           </div>
         ) : (
-          <div className="rounded-md border">
+          <div className="rounded-lg border border-gray-800">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Date</TableHead>
+                <TableRow className="border-gray-800 hover:bg-gray-800/50">
+                  <TableHead className="text-gray-400">Email</TableHead>
+                  <TableHead className="text-gray-400">Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {subscribers.map((subscriber) => (
-                  <TableRow key={subscriber.id}>
-                    <TableCell className="font-medium">{subscriber.email}</TableCell>
-                    <TableCell>
+                  <TableRow 
+                    key={subscriber.id}
+                    className="border-gray-800 hover:bg-gray-800/50"
+                  >
+                    <TableCell className="font-medium text-white">{subscriber.email}</TableCell>
+                    <TableCell className="text-gray-400">
                       {format(new Date(subscriber.created_at), 'MMM dd, yyyy')}
                     </TableCell>
                   </TableRow>
