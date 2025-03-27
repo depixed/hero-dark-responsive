@@ -14,8 +14,11 @@ SELECT
 FROM auth.users au
 JOIN public.profiles p ON p.user_id = au.id;
 
--- Set RLS on the view to only allow admin access
-ALTER VIEW public.users_view SECURITY INVOKER;
+-- The SECURITY INVOKER syntax was incorrect
+-- Instead, we'll use PostgreSQL RLS (Row Level Security) to control access
+
+-- Enable Row Level Security on the view
+ALTER TABLE public.users_view ENABLE ROW LEVEL SECURITY;
 
 -- You need to create an RLS policy to determine who can access this view
 -- For example, to restrict to admins only:
