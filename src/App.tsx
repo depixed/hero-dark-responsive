@@ -16,6 +16,7 @@ import UsersPage from "./pages/UsersPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import PublicRoute from "./components/auth/PublicRoute";
+import AdminRoute from "./components/auth/AdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -59,9 +60,21 @@ const App = () => (
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<DashboardPage />} />
-          <Route path="/admin/leads" element={<LeadsPage />} />
-          <Route path="/admin/users" element={<UsersPage />} />
+          <Route path="/admin" element={
+            <AdminRoute>
+              <DashboardPage />
+            </AdminRoute>
+          } />
+          <Route path="/admin/leads" element={
+            <AdminRoute>
+              <LeadsPage />
+            </AdminRoute>
+          } />
+          <Route path="/admin/users" element={
+            <AdminRoute>
+              <UsersPage />
+            </AdminRoute>
+          } />
           
           {/* Redirects */}
           <Route path="/auth/callback" element={<Navigate to="/dashboard" />} />

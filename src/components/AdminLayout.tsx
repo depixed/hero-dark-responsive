@@ -27,7 +27,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     const checkAuth = async () => {
       try {
         const user = await getCurrentUser();
-        setIsAuthenticated(!!user);
+        
+        // Admin check - either email is admin@incorpify.ai or user has admin role in metadata
+        const isUserAdmin = user && (
+          user.email === 'admin@incorpify.ai' || 
+          (user.user_metadata && user.user_metadata.role === 'admin')
+        );
+        
+        setIsAuthenticated(!!isUserAdmin);
       } catch (error) {
         console.error('Error checking authentication:', error);
         setIsAuthenticated(false);

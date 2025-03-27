@@ -34,6 +34,13 @@ const AdminLogin = () => {
     setError(null);
     setIsLoading(true);
     
+    // Only allow admin@incorpify.ai to login
+    if (email !== 'admin@incorpify.ai') {
+      setError('Access denied. This admin panel is restricted.');
+      setIsLoading(false);
+      return;
+    }
+    
     try {
       await signInAdmin(email, password);
       navigate('/admin');

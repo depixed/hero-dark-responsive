@@ -12,6 +12,7 @@ interface User {
   last_sign_in_at: string | null;
   raw_user_meta_data: any;
   email_confirmed_at: string | null;
+  role: string | null;
 }
 
 const UsersPage = () => {
@@ -89,6 +90,7 @@ const UsersPage = () => {
                     <tr className="border-b border-gray-800">
                       <th className="text-left p-4 text-gray-400 font-medium">Email</th>
                       <th className="text-left p-4 text-gray-400 font-medium">Full Name</th>
+                      <th className="text-left p-4 text-gray-400 font-medium">Role</th>
                       <th className="text-left p-4 text-gray-400 font-medium">Status</th>
                       <th className="text-left p-4 text-gray-400 font-medium">Created</th>
                       <th className="text-left p-4 text-gray-400 font-medium">Last Sign In</th>
@@ -101,6 +103,15 @@ const UsersPage = () => {
                           <td className="p-4">{user.email}</td>
                           <td className="p-4">
                             {user.raw_user_meta_data?.full_name || '-'}
+                          </td>
+                          <td className="p-4">
+                            {user.role === 'admin' ? (
+                              <Badge className="bg-purple-500/20 text-purple-400 hover:bg-purple-500/30">
+                                Admin
+                              </Badge>
+                            ) : (
+                              <span className="text-gray-400">User</span>
+                            )}
                           </td>
                           <td className="p-4">
                             {user.email_confirmed_at ? (
