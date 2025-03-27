@@ -67,6 +67,21 @@ export interface User {
   id: string;
   email: string;
   role: string;
+  full_name?: string;
+  created_at?: string;
+  avatar_url?: string;
+  phone?: string;
+  email_confirmed_at?: string;
+}
+
+// User Profile interface
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  full_name?: string;
+  avatar_url?: string;
+  phone?: string;
+  created_at: string;
 }
 
 // Authentication functions
@@ -90,12 +105,18 @@ export const signOutUser = async () => {
   }
 };
 
-export const getCurrentUser = async () => {
+export const getCurrentSession = async () => {
   const { data: { session }, error } = await supabase.auth.getSession();
   
   if (error) {
     throw error;
   }
+  
+  return session;
+};
+
+export const getCurrentUser = async () => {
+  const session = await getCurrentSession();
   
   if (!session) {
     return null;
@@ -367,6 +388,170 @@ export const signInWithOtp = async (email: string) => {
   }
 
   return data;
+};
+
+// User Authentication functions
+export const signUpUser = async (email: string, password: string, fullName: string) => {
+  // Sign up the user with Supabase
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${window.location.origin}/auth/callback`,
+      data: {
+        full_name: fullName,
+      }
+    }
+  });
+
+  if (authError) {
+    throw authError;
+  }
+
+  // Create a user profile
+  if (authData.user) {
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .insert([{
+        user_id: authData.user.id,
+        full_name: fullName,
+        avatar_url: null,
+        phone: null
+      }]);
+
+    if (profileError) {
+      console.error('Error creating user profile:', profileError);
+      // Continue even if profile creation fails, we can fix later
+    }
+  }
+
+  return authData;
+};
+
+export const signInUser = async (email: string, password: string) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const resetPassword = async (email: string) => {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/reset-password`,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const updatePassword = async (newPassword: string) => {
+  const { data, error } = await supabase.auth.updateUser({
+    password: newPassword
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+
+  return data;
+};
+
+export const updateUserProfile = async (
+  userId: string, 
+  updates: { full_name?: string; avatar_url?: string; phone?: string }
+) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
+
+// Setup auth state change listener
+export const setupAuthListener = (callback: (user: any) => void) => {
+  return supabase.auth.onAuthStateChange((event, session) => {
+    callback(session?.user || null);
+  });
+};
+
+// Admin functions
+export const getAllUsers = async (): Promise<(User & { profile?: UserProfile })[]> => {
+  try {
+    // Get all profiles first
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('*');
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+      throw profilesError;
+    }
+
+    // For each profile, get the user data from auth.users
+    // Note: Requires RLS policy to allow this or admin privileges
+    const usersWithProfiles: (User & { profile?: UserProfile })[] = [];
+    
+    // Use auth.users directly if you have admin privileges
+    // Alternatively, we'll create a proxy view or function in Supabase later
+    const { data: users, error: usersError } = await supabase
+      .from('users_view') // This would be a view you set up in Supabase
+      .select('*');
+      
+    if (usersError) {
+      console.error('Error fetching users:', usersError);
+      // Fallback to just profiles if we can't get users
+      return profiles.map(profile => ({
+        id: profile.user_id,
+        email: 'Email hidden - insufficient permissions',
+        role: 'user',
+        created_at: profile.created_at,
+        profile: profile
+      }));
+    }
+    
+    // Combine users with their profiles
+    return users.map(user => {
+      const profile = profiles.find(profile => profile.user_id === user.id);
+      return {
+        ...user,
+        profile
+      };
+    });
+  } catch (error) {
+    console.error('Error in getAllUsers:', error);
+    throw error;
+  }
 };
 
 export default supabase; 

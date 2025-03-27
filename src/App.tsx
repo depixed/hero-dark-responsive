@@ -1,55 +1,98 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Incorporation from "./pages/Incorporation";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import UserDashboard from "./pages/UserDashboard";
+import AiChatPage from "./pages/AiChatPage";
+import ServicesPage from "./pages/ServicesPage";
 import AdminLogin from "./pages/AdminLogin";
 import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
-import SettingsPage from "./pages/SettingsPage";
+import UsersPage from "./pages/UsersPage";
+import { AuthProvider } from "./contexts/AuthContext";
+import PrivateRoute from "./components/auth/PrivateRoute";
+import PublicRoute from "./components/auth/PublicRoute";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/incorporation" element={<Incorporation />} />
-        
-        {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<DashboardPage />} />
-        <Route path="/admin/leads" element={<LeadsPage />} />
-        <Route path="/admin/settings" element={<SettingsPage />} />
-        
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: '#1F2937',
-            color: '#fff',
-            borderRadius: '8px',
-            border: '1px solid #374151'
-          },
-          success: {
-            iconTheme: {
-              primary: '#10B981',
-              secondary: '#fff'
+      <AuthProvider>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/incorporation" element={<Incorporation />} />
+          
+          {/* Auth Routes - accessible only when not logged in */}
+          <Route path="/login" element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          } />
+          <Route path="/signup" element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          } />
+          
+          {/* User Dashboard Routes - protected */}
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <UserDashboard />
+            </PrivateRoute>
+          } />
+          <Route path="/dashboard/chat" element={
+            <PrivateRoute>
+              <AiChatPage />
+            </PrivateRoute>
+          } />
+          <Route path="/dashboard/services" element={
+            <PrivateRoute>
+              <ServicesPage />
+            </PrivateRoute>
+          } />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<DashboardPage />} />
+          <Route path="/admin/leads" element={<LeadsPage />} />
+          <Route path="/admin/users" element={<UsersPage />} />
+          
+          {/* Redirects */}
+          <Route path="/auth/callback" element={<Navigate to="/dashboard" />} />
+          
+          {/* Catch-all */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#1F2937',
+              color: '#fff',
+              borderRadius: '8px',
+              border: '1px solid #374151'
+            },
+            success: {
+              iconTheme: {
+                primary: '#10B981',
+                secondary: '#fff'
+              }
+            },
+            error: {
+              iconTheme: {
+                primary: '#EF4444',
+                secondary: '#fff'
+              }
             }
-          },
-          error: {
-            iconTheme: {
-              primary: '#EF4444',
-              secondary: '#fff'
-            }
-          }
-        }}
-      />
+          }}
+        />
+      </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>
 );

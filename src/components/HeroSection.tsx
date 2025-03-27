@@ -122,6 +122,11 @@ const HeroSection = () => {
                     Get Your Personalized Plan
                   </Button>
                 </a>
+                <a href="/signup" className="hidden md:block">
+                  <Button className="border-2 border-[#8e53e5] hover:bg-[#8e53e5]/10 text-white rounded-lg px-8 py-6 text-base transition-colors duration-200">
+                    Sign Up / Sign In
+                  </Button>
+                </a>
                 <a href="mailto:info@incorpify.ai">
                   <Button className="bg-transparent border-2 border-[#8e53e5] hover:bg-[#8e53e5]/10 text-white rounded-lg px-8 py-6 text-base transition-colors duration-200">
                     Get in touch
@@ -294,6 +299,11 @@ const HeroSection = () => {
               <a href="/incorporation" className="w-full">
                 <Button className="w-full bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 py-6 text-base font-medium shadow-lg shadow-purple-500/20">
                   Get Your Personalized Plan
+                </Button>
+              </a>
+              <a href="/signup" className="w-full">
+                <Button className="w-full border-2 border-[#8e53e5] hover:bg-[#8e53e5]/10 text-white rounded-lg px-8 py-6 text-base transition-colors duration-200">
+                  Sign Up / Sign In
                 </Button>
               </a>
               <a href="mailto:info@incorpify.ai" className="w-full">
