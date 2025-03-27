@@ -504,4 +504,25 @@ export const setupAuthListener = (callback: (user: any) => void) => {
   });
 };
 
+// User management functions
+export const getUsers = async (): Promise<User[]> => {
+  // Ensure we have a session before querying
+  const session = await ensureSession();
+  if (!session) {
+    console.warn('Unable to establish session for getUsers');
+  }
+
+  const { data, error } = await supabase
+    .from('users_view')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching users:', error);
+    throw error;
+  }
+
+  return data || [];
+};
+
 export default supabase; 
