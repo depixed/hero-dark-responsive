@@ -115,10 +115,17 @@ const HeroSection = () => {
                 />
               </motion.div>
               
-              {/* CTA Button */}
-              <motion.div className="flex justify-center" variants={itemVariants}>
+              {/* CTA Buttons */}
+              <motion.div className="flex justify-center space-x-4" variants={itemVariants}>
+                <a href="/incorporation">
+                  <Button className="bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 py-6 text-base font-medium shadow-lg shadow-purple-500/20">
+                    Get Your Personalized Plan
+                  </Button>
+                </a>
                 <a href="mailto:info@incorpify.ai">
-                  <Button className="bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-full px-8 py-6 text-base">Get in touch</Button>
+                  <Button className="bg-transparent border-2 border-[#8e53e5] hover:bg-[#8e53e5]/10 text-white rounded-lg px-8 py-6 text-base transition-colors duration-200">
+                    Get in touch
+                  </Button>
                 </a>
               </motion.div>
             </div>
@@ -173,10 +180,10 @@ const HeroSection = () => {
             animate="show"
           >
             {/* Hero Content */}
-            <motion.div className="text-center z-10 relative max-w-3xl mx-auto mb-4 pt-[150px]" variants={itemVariants}>
+            <motion.div className="text-center z-10 relative max-w-3xl mx-auto mb-8 pt-24" variants={itemVariants}>
               {/* Coming Soon Text */}
               <motion.h2 
-                className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-gradient-to-r from-[#8e53e5] to-white text-transparent bg-clip-text tracking-tight"
+                className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 bg-gradient-to-r from-[#8e53e5] to-white text-transparent bg-clip-text tracking-tight"
                 variants={itemVariants}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -185,20 +192,20 @@ const HeroSection = () => {
                 COMING SOON
               </motion.h2>
               
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-white">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-white">
                 The one-stop-shop that allows<br /> 
                 business owners to focus on what matters most:
                 <br />
                 <span className="text-[#a675f0]">Business</span>
               </h1>
               
-              <p className="text-sm md:text-base text-gray-300 mb-2">
+              <p className="text-sm md:text-base text-gray-300 mb-4">
                 Powered by Machine Learning and Advanced AI
               </p>
             </motion.div>
             
             {/* Animation in the middle (2X size) */}
-            <motion.div className="w-full max-w-xs mx-auto mb-6" variants={itemVariants}>
+            <motion.div className="w-full max-w-xs mx-auto mb-12" variants={itemVariants}>
               <DotLottieReact
                 src="https://lottie.host/f1734a28-94b6-4ac2-b8b0-b905e2fd5cbb/BseX2FThx7.lottie"
                 loop
@@ -208,7 +215,7 @@ const HeroSection = () => {
             </motion.div>
             
             {/* Cards stacked vertically */}
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-4 mb-12 px-4">
               <motion.div className="mobile-hero-card" variants={itemVariants}>
                 <div className="flex gap-2 items-center">
                   <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
@@ -282,10 +289,17 @@ const HeroSection = () => {
               </motion.div>
             </div>
             
-            {/* CTA Button */}
-            <motion.div className="flex justify-center mt-8 mb-4" variants={itemVariants}>
-              <a href="mailto:info@incorpify.ai">
-                <Button className="bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-full px-8 py-6 text-base">Get in touch</Button>
+            {/* CTA Buttons for Mobile */}
+            <motion.div className="flex flex-col space-y-4 px-6 mt-8 mb-12" variants={itemVariants}>
+              <a href="/incorporation" className="w-full">
+                <Button className="w-full bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white rounded-lg px-8 py-6 text-base font-medium shadow-lg shadow-purple-500/20">
+                  Get Your Personalized Plan
+                </Button>
+              </a>
+              <a href="mailto:info@incorpify.ai" className="w-full">
+                <Button className="w-full bg-transparent border-2 border-[#8e53e5] hover:bg-[#8e53e5]/10 text-white rounded-lg px-8 py-6 text-base transition-colors duration-200">
+                  Get in touch
+                </Button>
               </a>
             </motion.div>
           </motion.div>
