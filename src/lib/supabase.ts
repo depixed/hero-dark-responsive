@@ -81,7 +81,6 @@ export interface UserProfile {
   avatar_url?: string;
   phone?: string;
   created_at: string;
-  updated_at: string;
 }
 
 // Authentication functions
@@ -466,28 +465,18 @@ export const updatePassword = async (newPassword: string) => {
 };
 
 export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
 
-    if (error) {
-      if (error.code === 'PGRST116') {
-        // This is the "zero rows returned" error
-        console.info(`No profile found for user ${userId}. This is normal for new users.`);
-        return null;
-      }
-      console.error('Error fetching user profile:', error);
-      return null;
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Unexpected error in getUserProfile:', error);
+  if (error) {
+    console.error('Error fetching user profile:', error);
     return null;
   }
+
+  return data;
 };
 
 export const updateUserProfile = async (
@@ -513,35 +502,6 @@ export const setupAuthListener = (callback: (user: any) => void) => {
   return supabase.auth.onAuthStateChange((event, session) => {
     callback(session?.user || null);
   });
-};
-
-// User management functions
-export const getUsers = async (): Promise<UserProfile[]> => {
-  // Ensure we have a session before querying
-  const session = await ensureSession();
-  if (!session) {
-    console.warn('Unable to establish session for getUsers');
-  }
-
-  console.log('Fetching users from profiles table...');
-  
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching users:', error);
-      throw error;
-    }
-
-    console.log(`Found ${data?.length || 0} user profiles`);
-    return data || [];
-  } catch (error) {
-    console.error('Unexpected error in getUsers:', error);
-    return [];
-  }
 };
 
 export default supabase; 
