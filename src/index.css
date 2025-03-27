@@ -4,33 +4,33 @@
 
 @layer base {
   :root {
-    --background: 240 10% 95%;
-    --foreground: 240 10% 10%;
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
+    --card-foreground: 222.2 47.4% 11.2%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
+    --popover-foreground: 222.2 47.4% 11.2%;
 
-    --primary: 252 56% 55%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 252 56% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 252 56% 55%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 47.4% 11.2%;
 
     --radius: 0.5rem;
   }
@@ -46,6 +46,7 @@
     width: 100%;
     overflow-x: hidden;
     position: relative;
+    font-family: Inter, system-ui, -apple-system, sans-serif;
   }
   html {
     overflow-x: hidden;
@@ -53,7 +54,7 @@
   }
 }
 
-@keyframes gradient-animation {
+@keyframes gradient {
   0% {
     background-position: 0% 50%;
   }
@@ -66,7 +67,7 @@
 }
 
 .animate-gradient-animation {
-  animation: gradient-animation 15s ease infinite;
+  animation: gradient 15s ease infinite;
   background-size: 200% 200%;
 }
 
@@ -82,6 +83,31 @@
 .mobile-hero-card {
   @apply rounded-xl shadow-md border border-purple-400/30 p-4 transition-all duration-500 backdrop-blur-sm bg-black/40;
   @apply w-full z-10;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+/* Stacked card styles */
+.stacked-card-container {
+  perspective: 1000px;
+}
+
+.mobile-hero-card {
+  backface-visibility: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Card transition effect */
+.mobile-hero-card:nth-child(1) {
+  filter: drop-shadow(0 10px 8px rgb(59 0 235 / 0.2));
+}
+
+.mobile-hero-card:nth-child(2) {
+  filter: drop-shadow(0 8px 6px rgb(59 0 235 / 0.15));
+}
+
+.mobile-hero-card:nth-child(3) {
+  filter: drop-shadow(0 6px 4px rgb(59 0 235 / 0.1));
 }
 
 .testimonial-dot {
@@ -101,4 +127,56 @@
   min-height: 100vh;
   width: 100%;
   overflow-x: hidden;
+}
+
+/* Apply transitions for theme changes */
+*, *::before, *::after {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, outline-color 0.2s ease;
+}
+
+/* Prevent transition on initial load */
+.no-transition {
+  transition: none !important;
+}
+
+/* Make sure certain elements like gradients don't have transitions */
+.bg-gradient-to-r,
+.bg-gradient-to-br,
+[class*="from-"],
+[class*="to-"] {
+  transition: none !important;
+}
+
+.light-theme {
+  color-scheme: light;
+}
+
+.dark-theme {
+  color-scheme: dark;
+}
+
+.card-gradient-bg {
+  background: linear-gradient(45deg, #8e53e5, #3b00eb);
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+.testimonial-dots {
+  display: flex !important;
+}
+
+.testimonial-dots li {
+  margin: 0 4px;
+}
+
+.testimonial-dots li button {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  font-size: 0;
+}
+
+.testimonial-dots li.slick-active button {
+  background-color: white;
 }

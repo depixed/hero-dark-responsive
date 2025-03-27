@@ -12,6 +12,7 @@ import DashboardLayout from '../components/dashboard/DashboardLayout';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ServiceCard {
   title: string;
@@ -31,6 +32,7 @@ interface QuickStat {
 
 const UserDashboard = () => {
   const { user, profile } = useAuth();
+  const { theme } = useTheme();
   const [greeting, setGreeting] = useState<string>('');
   
   useEffect(() => {
@@ -91,10 +93,10 @@ const UserDashboard = () => {
     <DashboardLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">
+          <h1 className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-800' : 'text-white'} mb-1`}>
             {greeting}, {profile?.full_name || user?.email?.split('@')[0] || 'there'}
           </h1>
-          <p className="text-gray-400">
+          <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
             Welcome to your Incorpify dashboard. Here's what's happening with your business.
           </p>
         </div>
@@ -102,19 +104,24 @@ const UserDashboard = () => {
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickStats.map((stat, index) => (
-            <Card key={index} className="bg-[#1A1A1A] border-[#2F2F2F] text-white overflow-hidden">
+            <Card key={index} className={theme === 'light' 
+              ? 'bg-white border-gray-200 shadow-sm' 
+              : 'bg-[#1A1A1A] border-[#2F2F2F] text-white'} 
+            >
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center bg-gradient-to-br ${stat.color} text-white`}>
                     {stat.icon}
                   </div>
-                  <span className="text-2xl font-bold">{stat.value}</span>
+                  <span className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : ''}`}>{stat.value}</span>
                 </div>
               </CardHeader>
               <CardContent>
-                <h3 className="text-lg font-medium text-white mb-1">{stat.title}</h3>
+                <h3 className={`text-lg font-medium ${theme === 'light' ? 'text-gray-800' : 'text-white'} mb-1`}>{stat.title}</h3>
                 {stat.description && (
-                  <p className="text-sm text-gray-400">{stat.description}</p>
+                  <p className={theme === 'light' ? 'text-sm text-gray-600' : 'text-sm text-gray-400'}>
+                    {stat.description}
+                  </p>
                 )}
               </CardContent>
               <CardFooter className="pt-0">
@@ -133,7 +140,7 @@ const UserDashboard = () => {
         {/* Services */}
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-white">Our Services</h2>
+            <h2 className={`text-xl font-bold ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>Our Services</h2>
             <Link to="/dashboard/services" className="text-[#8e53e5] text-sm hover:underline">
               View all
             </Link>
@@ -141,20 +148,27 @@ const UserDashboard = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service, index) => (
-              <Card key={index} className="bg-[#1A1A1A] border-[#2F2F2F] text-white">
+              <Card key={index} className={theme === 'light' 
+                ? 'bg-white border-gray-200 shadow-sm' 
+                : 'bg-[#1A1A1A] border-[#2F2F2F] text-white'}
+              >
                 <CardHeader>
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br ${service.color} text-white mb-3`}>
                     {service.icon}
                   </div>
-                  <CardTitle className="text-white">{service.title}</CardTitle>
-                  <CardDescription className="text-gray-400">
+                  <CardTitle className={theme === 'light' ? 'text-gray-800' : 'text-white'}>
+                    {service.title}
+                  </CardTitle>
+                  <CardDescription className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
                     {service.description}
                   </CardDescription>
                 </CardHeader>
                 <CardFooter>
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-center border border-[#2F2F2F] text-white hover:bg-[#2F2F2F]/30"
+                    className={`w-full justify-center border ${theme === 'light'
+                      ? 'border-gray-200 text-gray-800 hover:bg-gray-50'
+                      : 'border-[#2F2F2F] text-white hover:bg-[#2F2F2F]/30'}`}
                     asChild
                   >
                     <Link to={service.path}>Learn More</Link>
@@ -166,11 +180,14 @@ const UserDashboard = () => {
         </div>
         
         {/* AI Assistant Promotional Card */}
-        <Card className="bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] border-[#2F2F2F] text-white overflow-hidden">
+        <Card className={theme === 'light'
+          ? 'bg-gradient-to-br from-white to-gray-50 border-gray-200 shadow-sm text-gray-800'
+          : 'bg-gradient-to-br from-[#1A1A1A] to-[#0F0F0F] border-[#2F2F2F] text-white'
+        }>
           <div className="flex flex-col md:flex-row items-center">
             <div className="p-6 flex-1">
               <h2 className="text-xl font-bold mb-2">Need Help With Your Business?</h2>
-              <p className="text-gray-400 mb-4">
+              <p className={theme === 'light' ? 'text-gray-600 mb-4' : 'text-gray-400 mb-4'}>
                 Our AI assistant is available 24/7 to answer your questions and provide guidance
                 on business formation, taxes, compliance, and more.
               </p>
@@ -181,7 +198,10 @@ const UserDashboard = () => {
                 <Link to="/dashboard/chat">Chat with AI Assistant</Link>
               </Button>
             </div>
-            <div className="bg-gradient-to-br from-[#3B00EC]/20 to-[#8e53e5]/20 p-8 flex-shrink-0 w-full md:w-auto">
+            <div className={theme === 'light'
+              ? 'bg-gradient-to-br from-purple-100 to-blue-50 p-8 flex-shrink-0 w-full md:w-auto'
+              : 'bg-gradient-to-br from-[#3B00EC]/20 to-[#8e53e5]/20 p-8 flex-shrink-0 w-full md:w-auto'
+            }>
               <div className="w-full md:w-48 h-48 flex items-center justify-center">
                 <MessageSquare size={72} className="text-[#8e53e5]" />
               </div>

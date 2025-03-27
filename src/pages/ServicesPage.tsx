@@ -15,6 +15,7 @@ import { Button } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Badge } from '../components/ui/badge';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import supabase from '../lib/supabase';
 
 interface Service {
@@ -39,8 +40,10 @@ interface ServiceRequest {
 
 const ServicesPage = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [activeRequests, setActiveRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("active");
 
   useEffect(() => {
     const fetchServiceRequests = async () => {
@@ -120,28 +123,38 @@ const ServicesPage = () => {
   ];
 
   const getStatusBadge = (status: ServiceRequest['status']) => {
+    const isLight = theme === 'light';
+    
     switch (status) {
       case 'pending':
         return (
-          <Badge className="bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 hover:bg-yellow-500/30">
+          <Badge className={isLight 
+            ? "bg-yellow-100 text-yellow-800 border border-yellow-200 hover:bg-yellow-200"
+            : "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 hover:bg-yellow-500/30"}>
             Pending
           </Badge>
         );
       case 'in_progress':
         return (
-          <Badge className="bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30">
+          <Badge className={isLight
+            ? "bg-blue-100 text-blue-800 border border-blue-200 hover:bg-blue-200"
+            : "bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30"}>
             In Progress
           </Badge>
         );
       case 'completed':
         return (
-          <Badge className="bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30">
+          <Badge className={isLight
+            ? "bg-green-100 text-green-800 border border-green-200 hover:bg-green-200" 
+            : "bg-green-500/20 text-green-300 border border-green-500/30 hover:bg-green-500/30"}>
             Completed
           </Badge>
         );
       case 'rejected':
         return (
-          <Badge className="bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30">
+          <Badge className={isLight
+            ? "bg-red-100 text-red-800 border border-red-200 hover:bg-red-200"
+            : "bg-red-500/20 text-red-300 border border-red-500/30 hover:bg-red-500/30"}>
             Rejected
           </Badge>
         );
@@ -167,34 +180,122 @@ const ServicesPage = () => {
     <DashboardLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">
+          <h1 className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-800' : 'text-white'} mb-1`}>
             Services
           </h1>
-          <p className="text-gray-400">
+          <p className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
             Explore our business services and manage your active requests.
           </p>
         </div>
         
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="bg-[#1A1A1A] border border-[#2F2F2F]">
-            <TabsTrigger value="all" className="data-[state=active]:bg-[#3B00EC] data-[state=active]:text-white">
-              All Services
-            </TabsTrigger>
-            <TabsTrigger value="active" className="data-[state=active]:bg-[#3B00EC] data-[state=active]:text-white">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className={theme === 'light' 
+            ? 'bg-white border border-gray-200' 
+            : 'bg-[#1A1A1A] border border-[#2F2F2F]'}>
+            <TabsTrigger 
+              value="active" 
+              className={theme === 'light'
+                ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white'
+                : 'data-[state=active]:bg-[#3B00EC] data-[state=active]:text-white'}>
               Active Requests
             </TabsTrigger>
+            <TabsTrigger 
+              value="all" 
+              className={theme === 'light'
+                ? 'data-[state=active]:bg-purple-600 data-[state=active]:text-white'
+                : 'data-[state=active]:bg-[#3B00EC] data-[state=active]:text-white'}>
+              All Services
+            </TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="active" className="pt-4">
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className={`animate-spin rounded-full h-8 w-8 border-2 ${
+                  theme === 'light' ? 'border-purple-500' : 'border-purple-300'
+                }`}></div>
+              </div>
+            ) : activeRequests.length === 0 ? (
+              <Card className={theme === 'light'
+                ? 'bg-white border-gray-200 shadow-sm'
+                : 'bg-[#1A1A1A] border-[#2F2F2F] text-white'}>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <Clock size={48} className={`${theme === 'light' ? 'text-gray-400' : 'text-gray-400'} mb-4`} />
+                  <h3 className={`text-xl font-medium ${theme === 'light' ? 'text-gray-800' : 'text-white'} mb-2`}>
+                    No Active Requests
+                  </h3>
+                  <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'} text-center max-w-md mb-6`}>
+                    You don't have any active service requests. Browse our services and get started with your business needs.
+                  </p>
+                  <Button 
+                    className="bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white"
+                    onClick={() => setActiveTab("all")}
+                  >
+                    View Services
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {activeRequests.map((request) => {
+                  const service = getServiceById(request.service_id);
+                  return (
+                    <Card key={request.id} className={theme === 'light'
+                      ? 'bg-white border-gray-200 shadow-sm hover:border-gray-300 transition-colors'
+                      : 'bg-[#1A1A1A] border-[#2F2F2F] text-white hover:border-gray-700 transition-colors'}>
+                      <CardContent className="p-4">
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                          <div className="flex items-center">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br ${service.color} text-white mr-4`}>
+                              {service.icon}
+                            </div>
+                            <div>
+                              <h3 className={`font-medium ${theme === 'light' ? 'text-gray-800' : 'text-white'}`}>
+                                {service.title}
+                              </h3>
+                              <div className="flex items-center gap-2 mt-1">
+                                {getStatusBadge(request.status)}
+                                <span className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
+                                  Requested on {formatDate(request.created_at)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            className={`group ${theme === 'light'
+                              ? 'border border-gray-200 hover:bg-gray-50 text-gray-800'
+                              : 'border border-[#2F2F2F] hover:bg-[#2F2F2F]/30 text-white'}`}
+                            asChild
+                          >
+                            <Link to={`/dashboard/services/requests/${request.id}`} className="flex items-center">
+                              View Details
+                              <ChevronRight size={16} className="ml-1 group-hover:translate-x-0.5 transition-transform" />
+                            </Link>
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+          </TabsContent>
           
           <TabsContent value="all" className="pt-4">
             <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
               {services.map((service) => (
-                <Card key={service.id} className="bg-[#1A1A1A] border-[#2F2F2F] text-white h-full flex flex-col">
+                <Card key={service.id} className={theme === 'light'
+                  ? 'bg-white border-gray-200 shadow-sm h-full flex flex-col'
+                  : 'bg-[#1A1A1A] border-[#2F2F2F] text-white h-full flex flex-col'}>
                   <CardHeader>
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br ${service.color} text-white mb-3`}>
                       {service.icon}
                     </div>
-                    <CardTitle className="text-white">{service.title}</CardTitle>
-                    <CardDescription className="text-gray-400">
+                    <CardTitle className={theme === 'light' ? 'text-gray-800' : 'text-white'}>
+                      {service.title}
+                    </CardTitle>
+                    <CardDescription className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
                       {service.description}
                     </CardDescription>
                   </CardHeader>
@@ -204,7 +305,9 @@ const ServicesPage = () => {
                       {service.features.map((feature, index) => (
                         <li key={index} className="flex items-start">
                           <FileCheck size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
-                          <span className="text-sm text-gray-300">{feature}</span>
+                          <span className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                            {feature}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -220,68 +323,6 @@ const ServicesPage = () => {
                 </Card>
               ))}
             </div>
-          </TabsContent>
-          
-          <TabsContent value="active" className="pt-4">
-            {loading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-              </div>
-            ) : activeRequests.length === 0 ? (
-              <Card className="bg-[#1A1A1A] border-[#2F2F2F] text-white">
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                  <Clock size={48} className="text-gray-400 mb-4" />
-                  <h3 className="text-xl font-medium text-white mb-2">No Active Requests</h3>
-                  <p className="text-gray-400 text-center max-w-md mb-6">
-                    You don't have any active service requests. Browse our services and get started with your business needs.
-                  </p>
-                  <Button 
-                    className="bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white"
-                    asChild
-                  >
-                    <Link to="#all">View Services</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {activeRequests.map((request) => {
-                  const service = getServiceById(request.service_id);
-                  return (
-                    <Card key={request.id} className="bg-[#1A1A1A] border-[#2F2F2F] text-white">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center p-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br ${service.color} text-white mb-3 sm:mb-0 sm:mr-4 flex-shrink-0`}>
-                          {service.icon}
-                        </div>
-                        
-                        <div className="flex-grow">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                            <h3 className="text-lg font-medium text-white">{service.title}</h3>
-                            {getStatusBadge(request.status)}
-                          </div>
-                          
-                          <div className="flex items-center text-sm text-gray-400">
-                            <Clock size={14} className="mr-1" />
-                            <span>Requested on {formatDate(request.created_at)}</span>
-                          </div>
-                        </div>
-                        
-                        <Button 
-                          variant="ghost" 
-                          className="mt-4 sm:mt-0 sm:ml-4 border border-[#2F2F2F] text-white hover:bg-[#2F2F2F]/30 flex-shrink-0"
-                          asChild
-                        >
-                          <Link to={`/dashboard/services/requests/${request.id}`} className="flex items-center">
-                            View Details
-                            <ChevronRight size={16} className="ml-1" />
-                          </Link>
-                        </Button>
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
           </TabsContent>
         </Tabs>
       </div>

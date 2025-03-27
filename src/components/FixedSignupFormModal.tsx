@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import supabase from '../lib/supabase';
 import { CheckCircle, Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export interface SignupFormModalProps {
   open: boolean;
@@ -21,6 +22,7 @@ export interface SignupFormModalProps {
 type FormStage = 'form' | 'success';
 
 const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAnswers }) => {
+  const { user, profile } = useAuth();
   const [formStage, setFormStage] = useState<FormStage>('form');
   const [formData, setFormData] = useState({
     name: '',
@@ -30,6 +32,56 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Auto-fill user data when available
+  useEffect(() => {
+    if (user && open) {
+      let userData = {
+        name: '',
+        email: user.email || '',
+        phone: '',
+      };
+
+      if (profile) {
+        userData.name = profile.full_name || '';
+        userData.phone = profile.phone || '';
+      }
+
+      setFormData(userData);
+
+      // If user is logged in and we have all required data, auto-submit the form
+      if (userData.email && userData.name) {
+        // Very short timeout to ensure the modal has rendered
+        setTimeout(() => {
+          handleAutoSubmit(userData);
+        }, 100);
+      }
+    }
+  }, [user, profile, open]);
+
+  const handleAutoSubmit = async (userData: { name: string; email: string; phone: string }) => {
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
+      
+      const { error } = await supabase
+        .from('leads')
+        .insert([{
+          name: userData.name,
+          email: userData.email,
+          phone: userData.phone || '',
+          answers: chatAnswers
+        }]);
+      
+      if (error) throw error;
+      setFormStage('success');
+    } catch (error) {
+      console.error('Error auto-creating lead:', error);
+      setSubmitError('Failed to submit your information. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -124,7 +176,7 @@ const SignupFormModal: React.FC<SignupFormModalProps> = ({ open, onClose, chatAn
                 Get Your Personalized Plan
               </DialogTitle>
               <DialogDescription className="text-gray-400 text-base">
-                Enter your details to receive your incorporation plan.
+                {user ? 'Confirming your details...' : 'Enter your details to receive your incorporation plan.'}
               </DialogDescription>
             </DialogHeader>
             

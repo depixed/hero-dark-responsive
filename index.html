@@ -8,6 +8,27 @@
     <meta name="description" content="The one-stop-shop that allows business owners to focus on what matters most: Business" />
     <meta name="author" content="Incorpify" />
     <meta property="og:image" content="/og-image.png" />
+    
+    <script>
+      // Apply the saved theme immediately to prevent flash
+      (function() {
+        document.documentElement.classList.add('no-transition');
+        const savedTheme = localStorage.getItem('dashboard-theme') || 'dark';
+        
+        // Set data attribute on html element
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Add theme class to body
+        document.body.classList.add(savedTheme === 'light' ? 'light-theme' : 'dark-theme');
+        
+        // Remove transition prevention after a slight delay
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            document.documentElement.classList.remove('no-transition');
+          }, 50);
+        });
+      })();
+    </script>
   </head>
 
   <body>

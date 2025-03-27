@@ -5,6 +5,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Send, User, Bot, Clock, ArrowDown } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import supabase from '../lib/supabase';
 
 interface Message {
@@ -24,6 +25,7 @@ interface ChatSession {
 
 const AiChatPage = () => {
   const { user } = useAuth();
+  const { theme } = useTheme();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -236,12 +238,16 @@ const AiChatPage = () => {
   return (
     <DashboardLayout>
       <div className="h-[calc(100vh-2rem)] md:h-[calc(100vh-4rem)] flex flex-col">
-        <h1 className="text-2xl font-bold text-white mb-4">AI Assistant</h1>
+        <h1 className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-800' : 'text-white'} mb-4`}>AI Assistant</h1>
         
         <div className="flex-1 flex flex-col md:flex-row gap-4 overflow-hidden">
           {/* Chat sessions sidebar - hidden on mobile */}
-          <div className="hidden md:flex flex-col w-64 bg-[#1A1A1A] border border-[#2F2F2F] rounded-lg overflow-hidden">
-            <div className="p-4 border-b border-[#2F2F2F]">
+          <div className={`hidden md:flex flex-col w-64 ${
+            theme === 'light' 
+              ? 'bg-white border-gray-200' 
+              : 'bg-[#1A1A1A] border-[#2F2F2F]'
+            } border rounded-lg overflow-hidden`}>
+            <div className={`p-4 border-b ${theme === 'light' ? 'border-gray-200' : 'border-[#2F2F2F]'}`}>
               <Button 
                 onClick={createNewSession}
                 className="w-full bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white"
@@ -249,27 +255,34 @@ const AiChatPage = () => {
                 New Chat
               </Button>
             </div>
-            
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto p-2">
               {sessions.length === 0 ? (
-                <div className="text-center p-4 text-gray-400">
-                  No previous chats
+                <div className={`text-center py-4 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
+                  No chat history yet
                 </div>
               ) : (
-                <div className="divide-y divide-[#2F2F2F]">
+                <div className="space-y-1">
                   {sessions.map(session => (
                     <button
                       key={session.id}
                       onClick={() => loadChatSession(session.id)}
-                      className={`w-full text-left p-3 hover:bg-[#2F2F2F]/20 transition-colors ${
-                        activeSession === session.id ? 'bg-[#2F2F2F]/30' : ''
+                      className={`w-full text-left p-2 rounded-md flex items-center gap-2 ${
+                        activeSession === session.id
+                          ? theme === 'light'
+                            ? 'bg-gray-100 text-gray-900'
+                            : 'bg-[#2F2F2F] text-white'
+                          : theme === 'light'
+                            ? 'hover:bg-gray-50 text-gray-700'
+                            : 'hover:bg-[#252525] text-gray-200'
                       }`}
                     >
-                      <div className="flex items-start">
-                        <Clock size={16} className="text-gray-400 mt-1 mr-2 flex-shrink-0" />
-                        <div className="overflow-hidden">
-                          <p className="text-sm text-white truncate">{session.title}</p>
-                          <p className="text-xs text-gray-400">{formatSessionDate(session.updated_at)}</p>
+                      <Clock size={14} className={theme === 'light' ? 'text-gray-500' : 'text-gray-400'} />
+                      <div className="flex-1 truncate">
+                        <div className="truncate font-medium text-sm">
+                          {session.title}
+                        </div>
+                        <div className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
+                          {formatSessionDate(session.updated_at)}
                         </div>
                       </div>
                     </button>
@@ -279,146 +292,98 @@ const AiChatPage = () => {
             </div>
           </div>
           
-          {/* Chat main area */}
-          <Card className="flex-1 bg-[#1A1A1A] border-[#2F2F2F] text-white flex flex-col overflow-hidden">
-            <CardHeader className="border-b border-[#2F2F2F] py-3 px-4">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-lg">
-                  {activeSession 
-                    ? sessions.find(s => s.id === activeSession)?.title || 'Chat' 
-                    : 'New Chat'}
-                </CardTitle>
-                
-                {/* Mobile dropdown for session selection */}
-                <div className="md:hidden">
-                  <select 
-                    value={activeSession || 'new'} 
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (value === 'new') {
-                        createNewSession();
-                      } else {
-                        loadChatSession(value);
-                      }
-                    }}
-                    className="bg-[#0F0F0F] border border-[#2F2F2F] text-white rounded-md p-1 text-sm"
-                  >
-                    <option value="new">New Chat</option>
-                    {sessions.map(session => (
-                      <option key={session.id} value={session.id}>
-                        {session.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="flex-1 overflow-y-auto p-0">
+          {/* Main chat area */}
+          <div className={`flex-1 flex flex-col ${
+            theme === 'light' 
+              ? 'bg-white border-gray-200' 
+              : 'bg-[#1A1A1A] border-[#2F2F2F]'
+            } border rounded-lg overflow-hidden`}>
+            {/* Messages container */}
+            <div className="flex-1 overflow-y-auto p-4">
               {isLoadingHistory ? (
                 <div className="h-full flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                  <div className={`w-8 h-8 border-t-2 ${
+                    theme === 'light' 
+                      ? 'border-purple-500' 
+                      : 'border-[#8e53e5]'
+                    } rounded-full animate-spin`}></div>
                 </div>
               ) : (
-                <div className="p-4 space-y-4">
+                <div className="space-y-4">
                   {messages.map((message, index) => (
                     <div 
                       key={index} 
-                      className={`flex ${
-                        message.role === 'user' ? 'justify-end' : 'justify-start'
-                      }`}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      <div className={`flex max-w-[80%] ${
-                        message.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-                      }`}>
-                        <div 
-                          className={`flex items-center justify-center h-8 w-8 rounded-full flex-shrink-0 ${
-                            message.role === 'user' 
-                              ? 'bg-[#3B00EC] ml-2' 
-                              : 'bg-[#8e53e5] mr-2'
+                      <div 
+                        className={`max-w-[80%] rounded-lg p-3 flex ${
+                          message.role === 'user'
+                            ? 'bg-[#8e53e5] text-white ml-4'
+                            : theme === 'light'
+                              ? 'bg-gray-100 text-gray-800 mr-4'
+                              : 'bg-[#252525] text-gray-100 mr-4'
+                        }`}
+                      >
+                        <div className={`shrink-0 h-8 w-8 rounded-full flex items-center justify-center mr-2 ${
+                          message.role === 'user'
+                            ? 'bg-[#7f43d6]'
+                            : theme === 'light'
+                              ? 'bg-gray-200'
+                              : 'bg-[#353535]'
                           }`}
                         >
                           {message.role === 'user' ? (
-                            <User size={16} className="text-white" />
+                            <User size={16} />
                           ) : (
-                            <Bot size={16} className="text-white" />
+                            <Bot size={16} />
                           )}
                         </div>
-                        
-                        <div>
-                          <div 
-                            className={`p-3 rounded-lg ${
-                              message.role === 'user' 
-                                ? 'bg-[#3B00EC]/20 border border-[#3B00EC]/30' 
-                                : 'bg-[#2F2F2F]'
+                        <div className="flex-1">
+                          <div className="whitespace-pre-wrap">
+                            {message.content}
+                          </div>
+                          <div className={`text-xs mt-1 ${
+                            message.role === 'user'
+                              ? 'text-purple-200'
+                              : theme === 'light'
+                                ? 'text-gray-500'
+                                : 'text-gray-400'
                             }`}
                           >
-                            <p className="text-white whitespace-pre-wrap">{message.content}</p>
-                          </div>
-                          <p className={`text-xs text-gray-400 mt-1 ${
-                            message.role === 'user' ? 'text-right' : 'text-left'
-                          }`}>
                             {formatTimestamp(message.timestamp)}
-                          </p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   ))}
-                  
-                  {loading && (
-                    <div className="flex justify-start">
-                      <div className="flex max-w-[80%] flex-row">
-                        <div className="bg-[#8e53e5] h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 mr-2">
-                          <Bot size={16} className="text-white" />
-                        </div>
-                        <div className="p-3 bg-[#2F2F2F] rounded-lg">
-                          <div className="flex space-x-2">
-                            <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                            <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
                   <div ref={messagesEndRef} />
                 </div>
               )}
-            </CardContent>
+            </div>
             
-            <div className="p-4 border-t border-[#2F2F2F]">
-              <form onSubmit={handleSendMessage} className="flex items-center space-x-2">
+            {/* Input area */}
+            <div className={`p-4 border-t ${theme === 'light' ? 'border-gray-200' : 'border-[#2F2F2F]'}`}>
+              <form onSubmit={handleSendMessage} className="flex gap-2">
                 <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  type="text"
                   placeholder="Type your message..."
-                  className="flex-1 bg-[#0F0F0F] border-[#2F2F2F] text-white h-12 rounded-lg px-4"
-                  disabled={loading || isLoadingHistory}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  className={theme === 'light' 
+                    ? 'border-gray-300 focus:border-purple-400 bg-white text-gray-800' 
+                    : 'border-gray-700 focus:border-[#8e53e5] bg-[#252525] text-white'}
+                  disabled={loading}
                 />
                 <Button 
-                  type="submit" 
-                  className={`bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] ${
-                    !input.trim() || loading || isLoadingHistory 
-                      ? 'opacity-50 cursor-not-allowed' 
-                      : 'hover:from-[#7440c0] hover:to-[#3100c5]'
-                  } h-12 w-12 rounded-lg flex items-center justify-center`}
-                  disabled={!input.trim() || loading || isLoadingHistory}
+                  type="submit"
+                  disabled={loading}
+                  className="bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white"
                 >
-                  <Send size={20} className="text-white" />
+                  <Send size={18} />
                 </Button>
               </form>
-              
-              {messages.length > 3 && (
-                <button 
-                  onClick={() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                  className="absolute bottom-20 right-8 bg-[#2F2F2F] text-white p-2 rounded-full shadow-lg hover:bg-[#3F3F3F] transition-colors"
-                >
-                  <ArrowDown size={20} />
-                </button>
-              )}
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </DashboardLayout>

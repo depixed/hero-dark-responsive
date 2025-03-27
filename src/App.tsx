@@ -14,6 +14,7 @@ import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
 import UsersPage from "./pages/UsersPage";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import PublicRoute from "./components/auth/PublicRoute";
 import AdminRoute from "./components/auth/AdminRoute";
@@ -24,87 +25,89 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/incorporation" element={<Incorporation />} />
-          
-          {/* Auth Routes - accessible only when not logged in */}
-          <Route path="/login" element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } />
-          <Route path="/signup" element={
-            <PublicRoute>
-              <Signup />
-            </PublicRoute>
-          } />
-          
-          {/* User Dashboard Routes - protected */}
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <UserDashboard />
-            </PrivateRoute>
-          } />
-          <Route path="/dashboard/chat" element={
-            <PrivateRoute>
-              <AiChatPage />
-            </PrivateRoute>
-          } />
-          <Route path="/dashboard/services" element={
-            <PrivateRoute>
-              <ServicesPage />
-            </PrivateRoute>
-          } />
-          
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={
-            <AdminRoute>
-              <DashboardPage />
-            </AdminRoute>
-          } />
-          <Route path="/admin/leads" element={
-            <AdminRoute>
-              <LeadsPage />
-            </AdminRoute>
-          } />
-          <Route path="/admin/users" element={
-            <AdminRoute>
-              <UsersPage />
-            </AdminRoute>
-          } />
-          
-          {/* Redirects */}
-          <Route path="/auth/callback" element={<Navigate to="/dashboard" />} />
-          
-          {/* Catch-all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              background: '#1F2937',
-              color: '#fff',
-              borderRadius: '8px',
-              border: '1px solid #374151'
-            },
-            success: {
-              iconTheme: {
-                primary: '#10B981',
-                secondary: '#fff'
+        <ThemeProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/incorporation" element={<Incorporation />} />
+            
+            {/* Auth Routes - accessible only when not logged in */}
+            <Route path="/login" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            } />
+            <Route path="/signup" element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            } />
+            
+            {/* User Dashboard Routes - protected */}
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <UserDashboard />
+              </PrivateRoute>
+            } />
+            <Route path="/dashboard/chat" element={
+              <PrivateRoute>
+                <AiChatPage />
+              </PrivateRoute>
+            } />
+            <Route path="/dashboard/services" element={
+              <PrivateRoute>
+                <ServicesPage />
+              </PrivateRoute>
+            } />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={
+              <AdminRoute>
+                <DashboardPage />
+              </AdminRoute>
+            } />
+            <Route path="/admin/leads" element={
+              <AdminRoute>
+                <LeadsPage />
+              </AdminRoute>
+            } />
+            <Route path="/admin/users" element={
+              <AdminRoute>
+                <UsersPage />
+              </AdminRoute>
+            } />
+            
+            {/* Redirects */}
+            <Route path="/auth/callback" element={<Navigate to="/dashboard" />} />
+            
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#1F2937',
+                color: '#fff',
+                borderRadius: '8px',
+                border: '1px solid #374151'
+              },
+              success: {
+                iconTheme: {
+                  primary: '#10B981',
+                  secondary: '#fff'
+                }
+              },
+              error: {
+                iconTheme: {
+                  primary: '#EF4444',
+                  secondary: '#fff'
+                }
               }
-            },
-            error: {
-              iconTheme: {
-                primary: '#EF4444',
-                secondary: '#fff'
-              }
-            }
-          }}
-        />
+            }}
+          />
+        </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
   </QueryClientProvider>
