@@ -12,7 +12,6 @@ import ServicesPage from "./pages/ServicesPage";
 import AdminLogin from "./pages/AdminLogin";
 import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
-import UsersPage from "./pages/UsersPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import PublicRoute from "./components/auth/PublicRoute";
@@ -61,7 +60,6 @@ const App = () => (
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<DashboardPage />} />
           <Route path="/admin/leads" element={<LeadsPage />} />
-          <Route path="/admin/users" element={<UsersPage />} />
           
           {/* Redirects */}
           <Route path="/auth/callback" element={<Navigate to="/dashboard" />} />

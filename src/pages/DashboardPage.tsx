@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Users, BarChart3, TrendingUp, Calendar, Mail, User } from 'lucide-react';
-import { getLeads, Lead, getCurrentUser, getAllUsers } from '../lib/supabase';
+import { Users, BarChart3, TrendingUp, Calendar, Mail } from 'lucide-react';
+import { getLeads, Lead, getCurrentUser } from '../lib/supabase';
 import SubscribersList from '../components/SubscribersList';
 
 const StatCard = ({ title, value, description, icon, className }: { 
@@ -30,7 +30,6 @@ const StatCard = ({ title, value, description, icon, className }: {
 const DashboardPage = () => {
   const navigate = useNavigate();
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [userCount, setUserCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
@@ -62,15 +61,6 @@ const DashboardPage = () => {
       try {
         const data = await getLeads();
         setLeads(data);
-        
-        // Also fetch user count
-        try {
-          const users = await getAllUsers();
-          setUserCount(users.length);
-        } catch (userError) {
-          console.error('Error fetching users:', userError);
-          // Don't set global error here, just log it
-        }
       } catch (error) {
         console.error('Error fetching leads:', error);
         setError('Failed to load dashboard data. Please try again later.');
@@ -149,11 +139,11 @@ const DashboardPage = () => {
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+          <div className="flex justify-center py-10">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-900/30 border border-red-700 text-red-200 p-4 rounded-lg mb-6">
+          <div className="bg-red-900/30 border border-red-700 text-red-200 p-4 rounded-lg">
             {error}
           </div>
         ) : (
@@ -167,17 +157,10 @@ const DashboardPage = () => {
                 className="bg-blue-500/10"
               />
               <StatCard
-                title="Users"
-                value={userCount.toString()}
-                description="Registered users"
-                icon={<User className="h-4 w-4" />}
-                className="bg-blue-500/10"
-              />
-              <StatCard
-                title="Weekly Leads"
+                title="Leads This Week"
                 value={leadsThisWeek}
                 description="New leads in the current week"
-                icon={<Calendar className="h-4 w-4 text-green-600" />}
+                icon={<BarChart3 className="h-4 w-4 text-green-600" />}
                 className="bg-green-500/10"
               />
               <StatCard
@@ -186,6 +169,13 @@ const DashboardPage = () => {
                 description="Week-over-week growth"
                 icon={<TrendingUp className="h-4 w-4 text-purple-600" />}
                 className="bg-purple-500/10"
+              />
+              <StatCard
+                title="Last Lead"
+                value={lastLeadDate}
+                description="Date of most recent lead"
+                icon={<Calendar className="h-4 w-4 text-orange-600" />}
+                className="bg-orange-500/10"
               />
             </div>
 

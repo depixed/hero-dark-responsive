@@ -71,7 +71,6 @@ export interface User {
   created_at?: string;
   avatar_url?: string;
   phone?: string;
-  email_confirmed_at?: string;
 }
 
 // User Profile interface
@@ -503,55 +502,6 @@ export const setupAuthListener = (callback: (user: any) => void) => {
   return supabase.auth.onAuthStateChange((event, session) => {
     callback(session?.user || null);
   });
-};
-
-// Admin functions
-export const getAllUsers = async (): Promise<(User & { profile?: UserProfile })[]> => {
-  try {
-    // Get all profiles first
-    const { data: profiles, error: profilesError } = await supabase
-      .from('profiles')
-      .select('*');
-
-    if (profilesError) {
-      console.error('Error fetching profiles:', profilesError);
-      throw profilesError;
-    }
-
-    // For each profile, get the user data from auth.users
-    // Note: Requires RLS policy to allow this or admin privileges
-    const usersWithProfiles: (User & { profile?: UserProfile })[] = [];
-    
-    // Use auth.users directly if you have admin privileges
-    // Alternatively, we'll create a proxy view or function in Supabase later
-    const { data: users, error: usersError } = await supabase
-      .from('users_view') // This would be a view you set up in Supabase
-      .select('*');
-      
-    if (usersError) {
-      console.error('Error fetching users:', usersError);
-      // Fallback to just profiles if we can't get users
-      return profiles.map(profile => ({
-        id: profile.user_id,
-        email: 'Email hidden - insufficient permissions',
-        role: 'user',
-        created_at: profile.created_at,
-        profile: profile
-      }));
-    }
-    
-    // Combine users with their profiles
-    return users.map(user => {
-      const profile = profiles.find(profile => profile.user_id === user.id);
-      return {
-        ...user,
-        profile
-      };
-    });
-  } catch (error) {
-    console.error('Error in getAllUsers:', error);
-    throw error;
-  }
 };
 
 export default supabase; 
