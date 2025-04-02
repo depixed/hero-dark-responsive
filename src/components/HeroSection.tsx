@@ -9,6 +9,7 @@ import { ArrowRight } from 'lucide-react';
 const HeroSection = () => {
   const isMobile = useIsMobile();
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const carouselRef = React.useRef(null);
   
   // Cards data for easy management
   const serviceCards = [
@@ -74,35 +75,35 @@ const HeroSection = () => {
       scale: 1, 
       y: 0, 
       opacity: 1,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.7, ease: "easeInOut" }
     },
     middle1: { 
       zIndex: 9, 
       scale: 0.95, 
       y: 10, 
       opacity: 0.9,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.7, ease: "easeInOut" }
     },
     middle2: { 
       zIndex: 8, 
       scale: 0.9, 
       y: 20, 
       opacity: 0.8,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.7, ease: "easeInOut" }
     },
     bottom: { 
       zIndex: 1, 
       scale: 0.85, 
       y: 30, 
       opacity: 0,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.7, ease: "easeInOut" }
     },
     exit: {
       zIndex: 0,
       scale: 0.8,
       y: -20,
       opacity: 0,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.7, ease: "easeInOut" }
     }
   };
 
@@ -110,8 +111,18 @@ const HeroSection = () => {
   useEffect(() => {
     if (isMobile) {
       const interval = setInterval(() => {
-        setActiveCardIndex((prev) => (prev + 1) % serviceCards.length);
-      }, 3000);
+        setActiveCardIndex((prev) => {
+          const newIndex = (prev + 1) % serviceCards.length;
+          if (carouselRef.current) {
+            const scrollAmount = carouselRef.current.scrollWidth / serviceCards.length;
+            carouselRef.current.scrollTo({
+              left: scrollAmount * newIndex,
+              behavior: 'smooth'
+            });
+          }
+          return newIndex;
+        });
+      }, 4000); // Increased interval for smoother feel
       
       return () => clearInterval(interval);
     }
@@ -192,10 +203,10 @@ const HeroSection = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.5 }}
                 >
-                  COMING SOON
+                  CURRENTLY IN BETA
                 </motion.h2>
 
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-white">
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-medium mb-4 text-white">
                   The one-stop-shop that allows business <br className="hidden md:block" /> 
                   owners to focus on what matters most:
                   <br />
@@ -294,10 +305,10 @@ const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
               >
-                COMING SOON
+                CURRENTLY IN BETA
               </motion.h2>
               
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-6 text-white">
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-medium mb-6 text-white">
                 The one-stop-shop that allows<br /> 
                 business owners to focus on what matters most:
                 <br />
@@ -321,30 +332,53 @@ const HeroSection = () => {
             
             {/* Stacked Card Animation */}
             <motion.div 
-              className="relative h-[120px] mx-auto mb-12 w-[90%] max-w-[320px] stacked-card-container"
+              className="mx-auto mb-12 w-full max-w-[360px]"
               variants={itemVariants}
             >
-              <div className="relative w-full h-full">
+              <div 
+                ref={carouselRef}
+                className="flex overflow-x-scroll scrollbar-hide snap-x snap-mandatory"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
                 {serviceCards.map((card, index) => (
-                  <motion.div
+                  <div 
                     key={card.id}
-                    className="mobile-hero-card absolute w-full left-0 top-0"
-                    variants={cardVariants}
-                    initial="bottom"
-                    animate={getCardVariant(index)}
-                    exit="exit"
-                    custom={index}
+                    className={`flex-shrink-0 w-full snap-center px-4 ${index === activeCardIndex ? 'opacity-100' : 'opacity-80'}`}
                   >
-                    <div className="flex gap-2 items-center">
-                      <div className="w-8 h-8 bg-purple-100 flex items-center justify-center rounded-lg">
-                        <span className="text-primary text-xl">{card.icon}</span>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-white">{card.title}</p>
-                        <p className="text-xs text-gray-300">{card.description}</p>
+                    <div className="mobile-hero-card p-4 rounded-xl backdrop-blur-md bg-white/5 border border-white/10 shadow-xl">
+                      <div className="flex gap-3 items-center">
+                        <div className="w-10 h-10 bg-purple-100 flex items-center justify-center rounded-lg">
+                          <span className="text-primary text-xl">{card.icon}</span>
+                        </div>
+                        <div>
+                          <p className="text-base font-semibold text-white">{card.title}</p>
+                          <p className="text-sm text-gray-300">{card.description}</p>
+                        </div>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Pagination Dots */}
+              <div className="flex justify-center space-x-2 mt-4">
+                {serviceCards.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      index === activeCardIndex ? 'bg-purple-500 w-4' : 'bg-gray-400/50'
+                    }`}
+                    onClick={() => {
+                      setActiveCardIndex(index);
+                      if (carouselRef.current) {
+                        const scrollAmount = carouselRef.current.scrollWidth / serviceCards.length;
+                        carouselRef.current.scrollTo({
+                          left: scrollAmount * index,
+                          behavior: 'smooth'
+                        });
+                      }
+                    }}
+                  />
                 ))}
               </div>
             </motion.div>
