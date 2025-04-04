@@ -766,7 +766,7 @@ const IncorporationChat = () => {
               className="h-full aspect-square rounded-none flex items-center justify-center bg-gradient-to-br from-[#3B00EC] to-[#965BE4] hover:from-[#3500D4] hover:to-[#8951CC] p-8"
               onClick={handleSendMessage}
             >
-              <Send className="w-16 h-16 text-white scale-150" strokeWidth={1.5} />
+              <Send className="w-16 h-16 text-white scale-50" strokeWidth={1.5} />
             </Button>
           </div>
         </div>
