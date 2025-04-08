@@ -5,7 +5,7 @@ import { useTheme } from "../../contexts/ThemeContext"
 import { cn } from "../../lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -47,7 +47,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (variant === "outline") {
       themeClass = theme === 'light' 
         ? "border border-gray-200 text-gray-800 hover:bg-gray-50" 
-        : "border border-[#2F2F2F] text-white hover:bg-[#2F2F2F]/30";
+        : "border border-gray-700 text-white hover:bg-gray-800";
     } else if (variant === "ghost") {
       themeClass = theme === 'light'
         ? "text-gray-700 hover:bg-gray-100 hover:text-gray-900"

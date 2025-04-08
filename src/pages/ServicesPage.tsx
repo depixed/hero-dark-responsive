@@ -75,50 +75,53 @@ const ServicesPage = () => {
     {
       id: 'incorporation',
       title: 'Business Incorporation',
-      description: 'Set up your business entity the right way with our guided incorporation service.',
+      description: 'Set up your business entity in the UAE with our comprehensive incorporation service.',
       icon: <Building size={24} />,
       path: '/dashboard/services/incorporation',
       color: 'from-[#8e53e5] to-[#3b00eb]',
       features: [
-        'Entity formation (LLC, C-Corp, S-Corp)',
-        'EIN registration',
-        'Operating agreement creation',
-        'State filing and registration',
-        'Registered agent service (1 year)'
+        'Mainland, Free Zone, or Offshore company formation',
+        'Trade license application and processing',
+        'Legal documentation preparation',
+        'Corporate bank account assistance',
+        'Visa processing support for owners and employees',
+        'Corporate PRO services'
       ],
-      price: 'Starting at $299'
+      price: ''
     },
     {
       id: 'tax',
-      title: 'Tax Optimization',
-      description: 'Optimize your tax strategy and save money with our personalized recommendations.',
+      title: 'Tax & VAT Services',
+      description: 'Optimize your tax strategy and ensure compliance with UAE and international tax regulations.',
       icon: <BarChart size={24} />,
       path: '/dashboard/services/tax',
       color: 'from-[#8e53e5] to-[#3b00eb]',
       features: [
-        'Tax structure analysis',
-        'Deduction optimization',
-        'Quarterly tax planning',
-        'Year-end tax preparation',
-        'IRS correspondence handling'
+        'UAE Corporate Tax registration and compliance',
+        'VAT registration and return filing',
+        'Economic Substance Regulations (ESR) compliance',
+        'Tax residency certificate application',
+        'International tax planning',
+        'Tax audit support'
       ],
-      price: 'Starting at $199'
+      price: ''
     },
     {
       id: 'compliance',
       title: 'Business Compliance',
-      description: 'Stay compliant with all regulations and avoid costly penalties.',
+      description: 'Stay compliant with all UAE regulations and avoid penalties with our comprehensive compliance services.',
       icon: <Briefcase size={24} />,
       path: '/dashboard/services/compliance',
       color: 'from-[#8e53e5] to-[#3b00eb]',
       features: [
-        'Annual report filing',
-        'Business license management',
-        'Compliance calendar',
-        'Regulatory updates',
-        'Legal document review'
+        'Annual license renewal',
+        'Legal documentation management',
+        'Ministry approvals and attestations',
+        'Regulatory updates and compliance',
+        'Commercial agency registration',
+        'Ultimate Beneficial Owner (UBO) registration'
       ],
-      price: 'Starting at $149'
+      price: ''
     },
   ];
 
@@ -283,41 +286,45 @@ const ServicesPage = () => {
           </TabsContent>
           
           <TabsContent value="all" className="pt-4">
-            <div className="grid gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {services.map((service) => (
                 <Card key={service.id} className={theme === 'light'
-                  ? 'bg-white border-gray-200 shadow-sm h-full flex flex-col'
-                  : 'bg-[#1A1A1A] border-[#2F2F2F] text-white h-full flex flex-col'}>
+                  ? 'bg-white border-gray-200 shadow-sm hover:border-purple-200 transition-all overflow-hidden'
+                  : 'bg-[#1A1A1A] border-[#2F2F2F] text-white hover:border-[#3B00EC]/40 transition-all overflow-hidden'}>
+                  <div className={`h-2 w-full bg-gradient-to-r ${service.color}`}></div>
                   <CardHeader>
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br ${service.color} text-white mb-3`}>
-                      {service.icon}
+                    <div className="flex items-center mb-2">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-br ${service.color} text-white mr-3`}>
+                        {service.icon}
+                      </div>
+                      <CardTitle className={theme === 'light' ? 'text-gray-800' : 'text-white'}>
+                        {service.title}
+                      </CardTitle>
                     </div>
-                    <CardTitle className={theme === 'light' ? 'text-gray-800' : 'text-white'}>
-                      {service.title}
-                    </CardTitle>
                     <CardDescription className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
                       {service.description}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-grow">
-                    <p className="text-[#8e53e5] font-medium mb-2">{service.price}</p>
-                    <ul className="space-y-2">
+                  <CardContent>
+                    <ul className="space-y-2 mt-2">
                       {service.features.map((feature, index) => (
                         <li key={index} className="flex items-start">
-                          <FileCheck size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
-                          <span className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                          <FileCheck className={`h-5 w-5 ${theme === 'light' ? 'text-purple-600' : 'text-purple-400'} mr-2 flex-shrink-0 mt-0.5`} />
+                          <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>
                             {feature}
                           </span>
                         </li>
                       ))}
                     </ul>
                   </CardContent>
-                  <CardFooter>
-                    <Button 
-                      className="w-full bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white"
+                  <CardFooter className="flex flex-col items-stretch pt-4 border-t border-gray-200 dark:border-[#2F2F2F]">
+                    <Button
                       asChild
+                      className="w-full bg-gradient-to-r from-[#8e53e5] to-[#3b00eb] hover:from-[#7440c0] hover:to-[#3100c5] text-white"
                     >
-                      <Link to={service.path}>Get Started</Link>
+                      <Link to={service.path}>
+                        Request Consultation <ChevronRight size={16} className="ml-1" />
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>

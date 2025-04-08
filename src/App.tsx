@@ -9,10 +9,15 @@ import Signup from "./pages/Signup";
 import UserDashboard from "./pages/UserDashboard";
 import AiChatPage from "./pages/AiChatPage";
 import ServicesPage from "./pages/ServicesPage";
+import SettingsPage from "./pages/SettingsPage";
 import AdminLogin from "./pages/AdminLogin";
 import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
 import UsersPage from "./pages/UsersPage";
+import ProposalPage from "./pages/ProposalPage";
+import ProposalEditor from "./components/proposal/ProposalEditor";
+import PublicProposalPreview from "./pages/PublicProposalPreview";
+import AiSettingsPage from "./pages/AiSettingsPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import PrivateRoute from "./components/auth/PrivateRoute";
@@ -30,6 +35,7 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/incorporation" element={<Incorporation />} />
+            <Route path="/proposals/:id" element={<PublicProposalPreview />} />
             
             {/* Auth Routes - accessible only when not logged in */}
             <Route path="/login" element={
@@ -59,6 +65,11 @@ const App = () => (
                 <ServicesPage />
               </PrivateRoute>
             } />
+            <Route path="/dashboard/settings" element={
+              <PrivateRoute>
+                <SettingsPage />
+              </PrivateRoute>
+            } />
             
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -75,6 +86,28 @@ const App = () => (
             <Route path="/admin/users" element={
               <AdminRoute>
                 <UsersPage />
+              </AdminRoute>
+            } />
+            <Route path="/admin/proposals" element={
+              <AdminRoute>
+                <ProposalPage />
+              </AdminRoute>
+            } />
+            <Route path="/admin/proposals/:id" element={
+              <AdminRoute>
+                <ProposalEditor />
+              </AdminRoute>
+            } />
+            <Route path="/admin/proposals/view/:id" element={
+              <AdminRoute>
+                <ProposalEditor />
+              </AdminRoute>
+            } />
+
+            {/* AI Settings Route */}
+            <Route path="/admin/ai-settings" element={
+              <AdminRoute>
+                <AiSettingsPage />
               </AdminRoute>
             } />
             

@@ -31,7 +31,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { path: '/dashboard', label: 'Dashboard', icon: <LayoutGrid size={20} /> },
     { path: '/dashboard/chat', label: 'AI Chat', icon: <MessageSquare size={20} /> },
     { path: '/dashboard/services', label: 'Services', icon: <FileText size={20} /> },
-    { path: '/dashboard/profile', label: 'Profile', icon: <User size={20} /> },
     { path: '/dashboard/settings', label: 'Settings', icon: <Settings size={20} /> }
   ];
 
@@ -224,4 +223,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   );
 };
 
-export default DashboardLayout; 
+export default DashboardLayout;

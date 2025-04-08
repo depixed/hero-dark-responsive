@@ -18,6 +18,9 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+// Export the Supabase client as default export
+export default supabase;
+
 // Enable console logging for development
 if (process.env.NODE_ENV === 'development') {
   console.log('Supabase client initialized in development mode');
@@ -465,18 +468,48 @@ export const updatePassword = async (newPassword: string) => {
 };
 
 export const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('user_id', userId)
-    .single();
+  try {
+    if (!userId) {
+      console.error('getUserProfile called with null or undefined userId');
+      return null;
+    }
 
-  if (error) {
-    console.error('Error fetching user profile:', error);
-    return null;
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle(); // Use maybeSingle instead to avoid error when no profile is found
+    
+    if (error && error.code !== 'PGRST116') {
+      console.error('Error fetching user profile:', error);
+      throw error;
+    }
+    
+    // If no profile exists, return a default profile
+    if (!data) {
+      return {
+        id: '',
+        user_id: userId,
+        full_name: '',
+        avatar_url: '',
+        phone: '',
+        created_at: new Date().toISOString()
+      };
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Exception in getUserProfile:', error);
+    // Return a default profile rather than throwing
+    return {
+      id: '',
+      user_id: userId,
+      full_name: '',
+      avatar_url: '',
+      phone: '',
+      created_at: new Date().toISOString()
+    };
   }
-
-  return data;
 };
 
 export const updateUserProfile = async (
@@ -502,6 +535,4 @@ export const setupAuthListener = (callback: (user: any) => void) => {
   return supabase.auth.onAuthStateChange((event, session) => {
     callback(session?.user || null);
   });
-};
-
-export default supabase; 
+}; 

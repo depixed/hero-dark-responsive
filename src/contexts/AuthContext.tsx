@@ -39,11 +39,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(currentUser);
         
         if (currentUser) {
-          const userProfile = await getUserProfile(currentUser.id);
-          setProfile(userProfile);
+          try {
+            const userProfile = await getUserProfile(currentUser.id);
+            setProfile(userProfile);
+          } catch (profileError) {
+            console.error('Error fetching user profile:', profileError);
+            // Set a default empty profile to prevent null references
+            setProfile({
+              id: '',
+              user_id: currentUser.id,
+              full_name: '',
+              avatar_url: '',
+              phone: '',
+              created_at: new Date().toISOString()
+            });
+          }
+        } else {
+          setProfile(null);
         }
       } catch (error) {
         console.error('Error checking user:', error);
+        // Clear user and profile on error to prevent inconsistent state
+        setUser(null);
+        setProfile(null);
       } finally {
         setLoading(false);
       }
@@ -55,9 +73,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: authListener } = setupAuthListener((user) => {
       setUser(user);
       if (user) {
-        getUserProfile(user.id).then(profile => {
-          setProfile(profile);
-        });
+        getUserProfile(user.id)
+          .then(profile => {
+            setProfile(profile || {
+              id: '',
+              user_id: user.id,
+              full_name: '',
+              avatar_url: '',
+              phone: '',
+              created_at: new Date().toISOString()
+            });
+          })
+          .catch(error => {
+            console.error('Error in auth listener when getting profile:', error);
+            // Set default profile on error
+            setProfile({
+              id: '',
+              user_id: user.id,
+              full_name: '',
+              avatar_url: '',
+              phone: '',
+              created_at: new Date().toISOString()
+            });
+          });
       } else {
         setProfile(null);
       }

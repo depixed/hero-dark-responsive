@@ -7,7 +7,9 @@ import {
   LogOut,
   ChevronDown,
   Menu,
-  X
+  X,
+  FileText,
+  BrainCircuit
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -58,6 +60,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard className="h-5 w-5" /> },
     { name: 'Leads', path: '/admin/leads', icon: <Users className="h-5 w-5" /> },
     { name: 'Users', path: '/admin/users', icon: <Users className="h-5 w-5" /> },
+    { name: 'Proposals', path: '/admin/proposals', icon: <FileText className="h-5 w-5" /> },
+    { name: 'AI Settings', path: '/admin/ai-settings', icon: <BrainCircuit className="h-5 w-5" /> },
     { name: 'Settings', path: '/admin/settings', icon: <Settings className="h-5 w-5" /> },
   ];
   

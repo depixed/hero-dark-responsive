@@ -15,7 +15,14 @@ import {
 import { getLeads, deleteLead, deleteLeads, updateLeadStatus, Lead } from '../lib/supabase';
 import { Search, ChevronDown, ChevronUp, Eye, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from "react-hot-toast";
-import { questions } from "@/components/IncorporationChat";
+import {
+  questions as initialQuestions,
+  incorporationCountryQuestion,
+  questions_new_company,
+  questions_existing_uae,
+  questions_existing_other,
+  Question
+} from "@/components/IncorporationChat";
 
 // Status configuration
 const STATUS_CONFIG = {
@@ -25,6 +32,26 @@ const STATUS_CONFIG = {
   converted: { label: 'Converted', color: 'bg-purple-500' },
   lost: { label: 'Lost', color: 'bg-gray-500' }
 } as const;
+
+// Combine all questions into a single map for easy lookup
+const allQuestionsMap: Map<string, Question> = new Map();
+initialQuestions.forEach(q => allQuestionsMap.set(q.id, q));
+allQuestionsMap.set(incorporationCountryQuestion.id, incorporationCountryQuestion);
+questions_new_company.forEach(q => allQuestionsMap.set(q.id, q));
+questions_existing_uae.forEach(q => allQuestionsMap.set(q.id, q));
+questions_existing_other.forEach(q => allQuestionsMap.set(q.id, q));
+
+// Define the logical order of all possible questions across flows
+const orderedQuestionIdsMasterList = [
+  initialQuestions.find(q => q.id === 'company_status')?.id,
+  incorporationCountryQuestion.id,
+  ...questions_new_company.map(q => q.id),
+  ...questions_existing_uae.map(q => q.id),
+  ...questions_existing_other.map(q => q.id),
+].filter((id): id is string => !!id); // Filter out undefined and ensure type string
+
+// Remove duplicates while preserving the first occurrence order
+const uniqueOrderedQuestionIds = Array.from(new Set(orderedQuestionIdsMasterList));
 
 const LeadsPage = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -482,34 +509,39 @@ const LeadsPage = () => {
                   </div>
                 </div>
 
-                {/* Questionnaire Answers */}
+                {/* Questionnaire Answers - MODIFIED for Order */}
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-3">Questionnaire Answers</h3>
                   <div className="space-y-4 bg-gray-800/50 p-4 rounded-lg">
                     {selectedLead.answers && Object.keys(selectedLead.answers).length > 0 ? (
-                      ['company_status', 'business_activity', 'setup_reason', 'shareholders_count', 'shareholder_nationalities', 'physical_office', 'initial_capital', 'additional_services'].map((key) => {
+                      // Iterate through the ordered list of IDs
+                      uniqueOrderedQuestionIds.map((key) => {
+                        // Check if the lead actually answered this question
                         const value = selectedLead.answers[key];
-                        if (!value) return null;
+                        if (value === undefined || value === null) return null; 
                         
-                        const question = questions.find(q => q.id === key);
-                        if (!question) return null;
+                        const question = allQuestionsMap.get(key);
+                        const questionText = question ? question.text : `Unknown Question (${key})`; 
+
+                        // Determine the answer text (handle single vs multi-select)
+                        let answerText = '';
+                        if (Array.isArray(value)) {
+                           answerText = value.map(v => {
+                              const option = question?.options?.find(opt => opt.id === v);
+                              return option ? option.text : v; 
+                            }).join(', ');
+                        } else {
+                            const option = question?.options?.find(opt => opt.id === value);
+                            answerText = option ? option.text : value; 
+                        }
 
                         return (
                           <div key={key} className="border-b border-gray-700 pb-3 mb-3 last:border-0 last:pb-0 last:mb-0">
                             <p className="text-gray-400 text-sm font-medium">
-                              {question.text}
+                              {questionText}
                             </p>
                             <p className="text-white mt-1">
-                              {Array.isArray(value) 
-                                ? value.map(v => {
-                                    const option = question.options?.find(opt => opt.id === v);
-                                    return option ? option.text : v;
-                                  }).join(', ')
-                                : (() => {
-                                    const option = question.options?.find(opt => opt.id === value);
-                                    return option ? option.text : value;
-                                  })()
-                              }
+                              {answerText}
                             </p>
                           </div>
                         );
