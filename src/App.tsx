@@ -15,7 +15,7 @@ import DashboardPage from "./pages/DashboardPage";
 import LeadsPage from "./pages/LeadsPage";
 import UsersPage from "./pages/UsersPage";
 import ProposalPage from "@/pages/ProposalPage";
-import ProposalEditor from "./components/proposal/ProposalEditor";
+import ProposalEditor from "@/components/proposal/ProposalEditor";
 import PublicProposalPreview from "@/pages/PublicProposalPreview";
 import AiSettingsPage from "./pages/AiSettingsPage";
 import { AuthProvider } from "./contexts/AuthContext";
