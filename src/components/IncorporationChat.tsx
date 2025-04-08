@@ -179,7 +179,7 @@ export const questions: Question[] = [
 // Branching question
 export const incorporationCountryQuestion: Question = {
     id: 'incorporation_country',
-    text: 'In which country is your company currently incorporated/registered?',
+    text: 'Please select the region where your company is incorporated/registered.',
     options: [ { id: 'uae', text: 'UAE' }, { id: 'other', text: 'Other Country' } ]
 };
 
